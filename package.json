@@ -1,23 +1,23 @@
 {
   "name": "vpdemo",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Support demo import and preview for vitepress",
   "type": "module",
   "files": [
-    "dist/vpdemo.es.js",
-    "dist/vpdemo.umd.js",
+    "dist/vpdemo.es.mjs",
+    "dist/vpdemo.umd.cjs",
     "dist/demo.vue",
     "dist/index.d.ts",
     "CHANGELOG.md",
     "LICENSE",
     "README.md"
   ],
-  "main": "dist/vpdemo.umd.js",
-  "module": "dist/vpdemo.es.js",
+  "main": "dist/vpdemo.umd.cjs",
+  "module": "dist/vpdemo.es.mjs",
   "exports": {
     ".": {
-      "import": "./dist/vpdemo.es.js",
-      "require": "./dist/vpdemo.umd.js"
+      "import": "./dist/vpdemo.es.mjs",
+      "require": "./dist/vpdemo.umd.cjs"
     },
     "./demo.vue": "./dist/demo.vue",
     "./index.d.ts": "./dist/index.d.ts"
