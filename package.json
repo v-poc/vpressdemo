@@ -1,0 +1,56 @@
+{
+  "name": "vpdemo",
+  "version": "0.1.2",
+  "description": "Support demo import and preview for vitepress",
+  "type": "module",
+  "files": [
+    "dist/vpdemo.es.js",
+    "dist/vpdemo.umd.js",
+    "dist/demo.vue",
+    "dist/index.d.ts",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "dist/vpdemo.umd.js",
+  "module": "dist/vpdemo.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vpdemo.es.js",
+      "require": "./dist/vpdemo.umd.js"
+    },
+    "./demo.vue": "./dist/demo.vue",
+    "./index.d.ts": "./dist/index.d.ts"
+  },
+  "keywords": [
+    "vitepress",
+    "vp-demo",
+    "vitepress-demo",
+    "vitepress-demo-import",
+    "vitepress-demo-preview"
+  ],
+  "author": "vpdemo contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/v-poc/vpdemo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/v-poc/vpdemo/issues"
+  },
+  "scripts": {
+    "dev-docs": "vitepress dev",
+    "build": "vite build",
+    "build-docs": "vitepress build",
+    "preview-docs": "vitepress preview",
+    "start": "vitepress dev"
+  },
+  "devDependencies": {
+    "shiki": "0.12.1",
+    "vite": "latest",
+    "vite-plugin-node-polyfills": "^0.8.2",
+    "vite-plugin-static-copy": "^0.15.0",
+    "vitepress": "latest",
+    "vue": "latest"
+  }
+}
