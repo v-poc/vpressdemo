@@ -21,7 +21,8 @@ export default defineConfig({
         "./src/vpdemo/index.ts"
       ),
       name: "VPDemo",
-      fileName: (format) => `vpdemo.${format}.${format === "es" ? "m" : "c"}js`,
+      formats: ["es"],
+      fileName: () => "index.js",
     },
   },
 });
