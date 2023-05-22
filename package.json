@@ -1,12 +1,12 @@
 {
   "name": "vpdemo",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Support demo import and preview for vitepress",
   "type": "module",
   "files": [
-    "dist/index.js",
-    "dist/demo.vue",
-    "dist/index.d.ts",
+    "dist",
+    "languages",
+    "themes",
     "CHANGELOG.md",
     "LICENSE",
     "README.md"

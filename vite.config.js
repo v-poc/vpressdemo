@@ -11,6 +11,7 @@ export default defineConfig({
       targets: [
         { src: "./src/vpdemo/demo.vue", dest: "." },
         { src: "./src/vpdemo/index.d.ts", dest: "." },
+        { src: "./src/vpdemo/index.js", dest: "." },
       ],
     }),
   ],
@@ -18,11 +19,11 @@ export default defineConfig({
     lib: {
       entry: resolve(
         dirname(fileURLToPath(import.meta.url)),
-        "./src/vpdemo/index.ts"
+        "./src/vpdemo/vpindex.ts"
       ),
       name: "VPDemo",
       formats: ["es"],
-      fileName: () => "index.js",
+      fileName: () => "vpindex.js",
     },
   },
 });

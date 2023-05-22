@@ -1,5 +1,5 @@
 import { defineConfig } from "vitepress"; // @ts-ignore
-import vpdemo from "../src/vpdemo/";
+import vpdemo from "../src/vpdemo/vpindex";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
