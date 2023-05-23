@@ -2128,7 +2128,7 @@ function setWasm(data) {
 let _onigurumaPromise = null;
 async function getOniguruma(wasmPath) {
   if (!_onigurumaPromise) {
-    let loader;
+    let loader = Promise.resolve();
     if (isBrowser) {
       if (typeof WASM === "string") {
         loader = loadWASM({
@@ -2141,14 +2141,15 @@ async function getOniguruma(wasmPath) {
           data: WASM,
         });
       }
-    } else {
+    }
+    /* else {
       const wasmPath2 = pathjoin(
         require.resolve("vscode-oniguruma"),
         "../onig.wasm"
       );
       const wasmBin = fs.readFileSync(wasmPath2).buffer;
       loader = loadWASM(wasmBin);
-    }
+    } */
     _onigurumaPromise = loader.then(() => {
       return {
         createOnigScanner(patterns) {
