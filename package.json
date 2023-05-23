@@ -1,6 +1,6 @@
 {
-  "name": "vpdemo",
-  "version": "0.1.5",
+  "name": "vpressdemo",
+  "version": "0.1.7",
   "description": "Support demo import and preview for vitepress",
   "type": "module",
   "files": [
@@ -23,19 +23,19 @@
   },
   "keywords": [
     "vitepress",
-    "vp-demo",
+    "vpress-demo",
     "vitepress-demo",
     "vitepress-demo-import",
     "vitepress-demo-preview"
   ],
-  "author": "vpdemo contributors",
+  "author": "vpressdemo contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/v-poc/vpdemo.git"
+    "url": "git+https://github.com/v-poc/vpressdemo.git"
   },
   "bugs": {
-    "url": "https://github.com/v-poc/vpdemo/issues"
+    "url": "https://github.com/v-poc/vpressdemo/issues"
   },
   "scripts": {
     "dev-docs": "vitepress dev",
