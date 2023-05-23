@@ -1,8 +1,12 @@
 import fs from "fs";
-import { dirname, resolve } from "path";
+import { dirname, resolve, isAbsolute, join as pathjoin } from "path";
 import { fileURLToPath } from "url";
-import { loadWASM, createOnigScanner, createOnigString } from 'vscode-oniguruma';
-import { INITIAL, Registry as Registry$1 } from 'vscode-textmate';
+import {
+  loadWASM,
+  createOnigScanner,
+  createOnigString,
+} from "vscode-oniguruma";
+import { INITIAL, Registry as Registry$1 } from "vscode-textmate";
 
 const themes = [
   "css-variables",
@@ -33,7 +37,7 @@ const themes = [
   "solarized-dark",
   "solarized-light",
   "vitesse-dark",
-  "vitesse-light"
+  "vitesse-light",
 ];
 
 const languages = [
@@ -41,138 +45,148 @@ const languages = [
     id: "abap",
     scopeName: "source.abap",
     path: "abap.tmLanguage.json",
-    samplePath: "abap.sample"
+    samplePath: "abap.sample",
   },
   {
     id: "actionscript-3",
     scopeName: "source.actionscript.3",
     path: "actionscript-3.tmLanguage.json",
-    samplePath: "actionscript-3.sample"
+    samplePath: "actionscript-3.sample",
   },
   {
     id: "ada",
     scopeName: "source.ada",
     path: "ada.tmLanguage.json",
-    samplePath: "ada.sample"
+    samplePath: "ada.sample",
   },
   {
     id: "apache",
     scopeName: "source.apacheconf",
-    path: "apache.tmLanguage.json"
+    path: "apache.tmLanguage.json",
   },
   {
     id: "apex",
     scopeName: "source.apex",
     path: "apex.tmLanguage.json",
-    samplePath: "apex.sample"
+    samplePath: "apex.sample",
   },
   {
     id: "apl",
     scopeName: "source.apl",
     path: "apl.tmLanguage.json",
-    embeddedLangs: ["html", "xml", "css", "javascript", "json"]
+    embeddedLangs: ["html", "xml", "css", "javascript", "json"],
   },
   {
     id: "applescript",
     scopeName: "source.applescript",
     path: "applescript.tmLanguage.json",
-    samplePath: "applescript.sample"
+    samplePath: "applescript.sample",
   },
   {
     id: "asm",
     scopeName: "source.asm.x86_64",
     path: "asm.tmLanguage.json",
-    samplePath: "asm.sample"
+    samplePath: "asm.sample",
   },
   {
     id: "astro",
     scopeName: "source.astro",
     path: "astro.tmLanguage.json",
     samplePath: "astro.sample",
-    embeddedLangs: ["json", "javascript", "typescript", "tsx", "css", "less", "sass", "scss", "stylus"]
+    embeddedLangs: [
+      "json",
+      "javascript",
+      "typescript",
+      "tsx",
+      "css",
+      "less",
+      "sass",
+      "scss",
+      "stylus",
+    ],
   },
   {
     id: "awk",
     scopeName: "source.awk",
     path: "awk.tmLanguage.json",
-    samplePath: "awk.sample"
+    samplePath: "awk.sample",
   },
   {
     id: "ballerina",
     scopeName: "source.ballerina",
     path: "ballerina.tmLanguage.json",
-    samplePath: "ballerina.sample"
+    samplePath: "ballerina.sample",
   },
   {
     id: "bat",
     scopeName: "source.batchfile",
     path: "bat.tmLanguage.json",
     samplePath: "bat.sample",
-    aliases: ["batch"]
+    aliases: ["batch"],
   },
   {
     id: "berry",
     scopeName: "source.berry",
     path: "berry.tmLanguage.json",
     samplePath: "berry.sample",
-    aliases: ["be"]
+    aliases: ["be"],
   },
   {
     id: "bibtex",
     scopeName: "text.bibtex",
-    path: "bibtex.tmLanguage.json"
+    path: "bibtex.tmLanguage.json",
   },
   {
     id: "bicep",
     scopeName: "source.bicep",
     path: "bicep.tmLanguage.json",
-    samplePath: "bicep.sample"
+    samplePath: "bicep.sample",
   },
   {
     id: "blade",
     scopeName: "text.html.php.blade",
     path: "blade.tmLanguage.json",
     samplePath: "blade.sample",
-    embeddedLangs: ["html", "xml", "sql", "javascript", "json", "css"]
+    embeddedLangs: ["html", "xml", "sql", "javascript", "json", "css"],
   },
   {
     id: "c",
     scopeName: "source.c",
     path: "c.tmLanguage.json",
-    samplePath: "c.sample"
+    samplePath: "c.sample",
   },
   {
     id: "cadence",
     scopeName: "source.cadence",
     path: "cadence.tmLanguage.json",
     samplePath: "cadence.sample",
-    aliases: ["cdc"]
+    aliases: ["cdc"],
   },
   {
     id: "clarity",
     scopeName: "source.clar",
     path: "clarity.tmLanguage.json",
-    samplePath: "clarity.sample"
+    samplePath: "clarity.sample",
   },
   {
     id: "clojure",
     scopeName: "source.clojure",
     path: "clojure.tmLanguage.json",
     samplePath: "clojure.sample",
-    aliases: ["clj"]
+    aliases: ["clj"],
   },
   {
     id: "cmake",
     scopeName: "source.cmake",
     path: "cmake.tmLanguage.json",
-    samplePath: "cmake.sample"
+    samplePath: "cmake.sample",
   },
   {
     id: "cobol",
     scopeName: "source.cobol",
     path: "cobol.tmLanguage.json",
     samplePath: "cobol.sample",
-    embeddedLangs: ["sql", "html", "java"]
+    embeddedLangs: ["sql", "html", "java"],
   },
   {
     id: "codeql",
@@ -180,110 +194,110 @@ const languages = [
     path: "codeql.tmLanguage.json",
     samplePath: "codeql.sample",
     aliases: ["ql"],
-    embeddedLangs: ["markdown"]
+    embeddedLangs: ["markdown"],
   },
   {
     id: "coffee",
     scopeName: "source.coffee",
     path: "coffee.tmLanguage.json",
     samplePath: "coffee.sample",
-    embeddedLangs: ["javascript"]
+    embeddedLangs: ["javascript"],
   },
   {
     id: "cpp",
     scopeName: "source.cpp",
     path: "cpp.tmLanguage.json",
     samplePath: "cpp.sample",
-    embeddedLangs: ["glsl", "sql"]
+    embeddedLangs: ["glsl", "sql"],
   },
   {
     id: "crystal",
     scopeName: "source.crystal",
     path: "crystal.tmLanguage.json",
     samplePath: "crystal.sample",
-    embeddedLangs: ["html", "sql", "css", "c", "javascript", "shellscript"]
+    embeddedLangs: ["html", "sql", "css", "c", "javascript", "shellscript"],
   },
   {
     id: "csharp",
     scopeName: "source.cs",
     path: "csharp.tmLanguage.json",
     samplePath: "csharp.sample",
-    aliases: ["c#", "cs"]
+    aliases: ["c#", "cs"],
   },
   {
     id: "css",
     scopeName: "source.css",
     path: "css.tmLanguage.json",
-    samplePath: "css.sample"
+    samplePath: "css.sample",
   },
   {
     id: "cue",
     scopeName: "source.cue",
     path: "cue.tmLanguage.json",
-    samplePath: "cue.sample"
+    samplePath: "cue.sample",
   },
   {
     id: "d",
     scopeName: "source.d",
     path: "d.tmLanguage.json",
-    samplePath: "d.sample"
+    samplePath: "d.sample",
   },
   {
     id: "dart",
     scopeName: "source.dart",
     path: "dart.tmLanguage.json",
-    samplePath: "dart.sample"
+    samplePath: "dart.sample",
   },
   {
     id: "diff",
     scopeName: "source.diff",
     path: "diff.tmLanguage.json",
-    samplePath: "diff.sample"
+    samplePath: "diff.sample",
   },
   {
     id: "docker",
     scopeName: "source.dockerfile",
     path: "docker.tmLanguage.json",
-    samplePath: "docker.sample"
+    samplePath: "docker.sample",
   },
   {
     id: "dream-maker",
     scopeName: "source.dm",
-    path: "dream-maker.tmLanguage.json"
+    path: "dream-maker.tmLanguage.json",
   },
   {
     id: "elixir",
     scopeName: "source.elixir",
     path: "elixir.tmLanguage.json",
     samplePath: "elixir.sample",
-    embeddedLangs: ["html"]
+    embeddedLangs: ["html"],
   },
   {
     id: "elm",
     scopeName: "source.elm",
     path: "elm.tmLanguage.json",
     samplePath: "elm.sample",
-    embeddedLangs: ["glsl"]
+    embeddedLangs: ["glsl"],
   },
   {
     id: "erb",
     scopeName: "text.html.erb",
     path: "erb.tmLanguage.json",
     samplePath: "erb.sample",
-    embeddedLangs: ["html", "ruby"]
+    embeddedLangs: ["html", "ruby"],
   },
   {
     id: "erlang",
     scopeName: "source.erlang",
     path: "erlang.tmLanguage.json",
     samplePath: "erlang.sample",
-    aliases: ["erl"]
+    aliases: ["erl"],
   },
   {
     id: "fish",
     scopeName: "source.fish",
     path: "fish.tmLanguage.json",
-    samplePath: "fish.sample"
+    samplePath: "fish.sample",
   },
   {
     id: "fsharp",
@@ -291,381 +305,474 @@ const languages = [
     path: "fsharp.tmLanguage.json",
     samplePath: "fsharp.sample",
     aliases: ["f#", "fs"],
-    embeddedLangs: ["markdown"]
+    embeddedLangs: ["markdown"],
   },
   {
     id: "gherkin",
     scopeName: "text.gherkin.feature",
-    path: "gherkin.tmLanguage.json"
+    path: "gherkin.tmLanguage.json",
   },
   {
     id: "git-commit",
     scopeName: "text.git-commit",
     path: "git-commit.tmLanguage.json",
-    embeddedLangs: ["diff"]
+    embeddedLangs: ["diff"],
   },
   {
     id: "git-rebase",
     scopeName: "text.git-rebase",
     path: "git-rebase.tmLanguage.json",
-    embeddedLangs: ["shellscript"]
+    embeddedLangs: ["shellscript"],
   },
   {
     id: "glsl",
     scopeName: "source.glsl",
     path: "glsl.tmLanguage.json",
     samplePath: "glsl.sample",
-    embeddedLangs: ["c"]
+    embeddedLangs: ["c"],
   },
   {
     id: "gnuplot",
     scopeName: "source.gnuplot",
-    path: "gnuplot.tmLanguage.json"
+    path: "gnuplot.tmLanguage.json",
   },
   {
     id: "go",
     scopeName: "source.go",
     path: "go.tmLanguage.json",
-    samplePath: "go.sample"
+    samplePath: "go.sample",
   },
   {
     id: "graphql",
     scopeName: "source.graphql",
     path: "graphql.tmLanguage.json",
-    embeddedLangs: ["javascript", "typescript", "jsx", "tsx"]
+    embeddedLangs: ["javascript", "typescript", "jsx", "tsx"],
   },
   {
     id: "groovy",
     scopeName: "source.groovy",
-    path: "groovy.tmLanguage.json"
+    path: "groovy.tmLanguage.json",
   },
   {
     id: "hack",
     scopeName: "source.hack",
     path: "hack.tmLanguage.json",
-    embeddedLangs: ["html", "sql"]
+    embeddedLangs: ["html", "sql"],
   },
   {
     id: "haml",
     scopeName: "text.haml",
     path: "haml.tmLanguage.json",
-    embeddedLangs: ["ruby", "javascript", "sass", "coffee", "markdown", "css"]
+    embeddedLangs: ["ruby", "javascript", "sass", "coffee", "markdown", "css"],
   },
   {
     id: "handlebars",
     scopeName: "text.html.handlebars",
     path: "handlebars.tmLanguage.json",
     aliases: ["hbs"],
-    embeddedLangs: ["html", "css", "javascript", "yaml"]
+    embeddedLangs: ["html", "css", "javascript", "yaml"],
   },
   {
     id: "haskell",
     scopeName: "source.haskell",
     path: "haskell.tmLanguage.json",
-    aliases: ["hs"]
+    aliases: ["hs"],
   },
   {
     id: "hcl",
     scopeName: "source.hcl",
     path: "hcl.tmLanguage.json",
-    samplePath: "hcl.sample"
+    samplePath: "hcl.sample",
   },
   {
     id: "hlsl",
     scopeName: "source.hlsl",
-    path: "hlsl.tmLanguage.json"
+    path: "hlsl.tmLanguage.json",
   },
   {
     id: "html",
     scopeName: "text.html.basic",
     path: "html.tmLanguage.json",
     samplePath: "html.sample",
-    embeddedLangs: ["javascript", "css"]
+    embeddedLangs: ["javascript", "css"],
   },
   {
     id: "imba",
     scopeName: "source.imba",
     path: "imba.tmLanguage.json",
-    samplePath: "imba.sample"
+    samplePath: "imba.sample",
   },
   {
     id: "ini",
     scopeName: "source.ini",
-    path: "ini.tmLanguage.json"
+    path: "ini.tmLanguage.json",
   },
   {
     id: "java",
     scopeName: "source.java",
     path: "java.tmLanguage.json",
-    samplePath: "java.sample"
+    samplePath: "java.sample",
   },
   {
     id: "javascript",
     scopeName: "source.js",
     path: "javascript.tmLanguage.json",
     samplePath: "javascript.sample",
-    aliases: ["js"]
+    aliases: ["js"],
   },
   {
     id: "jinja-html",
     scopeName: "text.html.jinja",
     path: "jinja-html.tmLanguage.json",
-    embeddedLangs: ["html"]
+    embeddedLangs: ["html"],
   },
   {
     id: "json",
     scopeName: "source.json",
-    path: "json.tmLanguage.json"
+    path: "json.tmLanguage.json",
   },
   {
     id: "json5",
     scopeName: "source.json5",
     path: "json5.tmLanguage.json",
-    samplePath: "json5.sample"
+    samplePath: "json5.sample",
   },
   {
     id: "jsonc",
     scopeName: "source.json.comments",
-    path: "jsonc.tmLanguage.json"
+    path: "jsonc.tmLanguage.json",
   },
   {
     id: "jsonnet",
     scopeName: "source.jsonnet",
-    path: "jsonnet.tmLanguage.json"
+    path: "jsonnet.tmLanguage.json",
   },
   {
     id: "jssm",
     scopeName: "source.jssm",
     path: "jssm.tmLanguage.json",
     samplePath: "jssm.sample",
-    aliases: ["fsl"]
+    aliases: ["fsl"],
   },
   {
     id: "jsx",
     scopeName: "source.js.jsx",
-    path: "jsx.tmLanguage.json"
+    path: "jsx.tmLanguage.json",
   },
   {
     id: "julia",
     scopeName: "source.julia",
     path: "julia.tmLanguage.json",
-    embeddedLangs: ["cpp", "python", "javascript", "r", "sql"]
+    embeddedLangs: ["cpp", "python", "javascript", "r", "sql"],
   },
   {
     id: "kotlin",
     scopeName: "source.kotlin",
-    path: "kotlin.tmLanguage.json"
+    path: "kotlin.tmLanguage.json",
   },
   {
     id: "latex",
     scopeName: "text.tex.latex",
     path: "latex.tmLanguage.json",
-    embeddedLangs: ["tex", "css", "haskell", "html", "xml", "java", "lua", "julia", "ruby", "javascript", "typescript", "python", "yaml", "rust", "scala", "gnuplot"]
+    embeddedLangs: [
+      "tex",
+      "css",
+      "haskell",
+      "html",
+      "xml",
+      "java",
+      "lua",
+      "julia",
+      "ruby",
+      "javascript",
+      "typescript",
+      "python",
+      "yaml",
+      "rust",
+      "scala",
+      "gnuplot",
+    ],
   },
   {
     id: "less",
     scopeName: "source.css.less",
     path: "less.tmLanguage.json",
-    embeddedLangs: ["css"]
+    embeddedLangs: ["css"],
   },
   {
     id: "liquid",
     scopeName: "text.html.liquid",
     path: "liquid.tmLanguage.json",
     samplePath: "liquid.sample",
-    embeddedLangs: ["html", "css", "json", "javascript"]
+    embeddedLangs: ["html", "css", "json", "javascript"],
   },
   {
     id: "lisp",
     scopeName: "source.lisp",
-    path: "lisp.tmLanguage.json"
+    path: "lisp.tmLanguage.json",
   },
   {
     id: "logo",
     scopeName: "source.logo",
-    path: "logo.tmLanguage.json"
+    path: "logo.tmLanguage.json",
   },
   {
     id: "lua",
     scopeName: "source.lua",
     path: "lua.tmLanguage.json",
-    embeddedLangs: ["c"]
+    embeddedLangs: ["c"],
   },
   {
     id: "make",
     scopeName: "source.makefile",
     path: "make.tmLanguage.json",
-    aliases: ["makefile"]
+    aliases: ["makefile"],
   },
   {
     id: "markdown",
     scopeName: "text.html.markdown",
     path: "markdown.tmLanguage.json",
     aliases: ["md"],
-    embeddedLangs: ["css", "html", "ini", "java", "lua", "make", "perl", "r", "ruby", "php", "sql", "vb", "xml", "xsl", "yaml", "bat", "clojure", "coffee", "c", "cpp", "diff", "docker", "git-commit", "git-rebase", "go", "groovy", "pug", "javascript", "json", "jsonc", "less", "objective-c", "swift", "scss", "raku", "powershell", "python", "julia", "rust", "scala", "shellscript", "typescript", "tsx", "csharp", "fsharp", "dart", "handlebars", "erlang", "elixir", "latex", "bibtex"]
+    embeddedLangs: [
+      "css",
+      "html",
+      "ini",
+      "java",
+      "lua",
+      "make",
+      "perl",
+      "r",
+      "ruby",
+      "php",
+      "sql",
+      "vb",
+      "xml",
+      "xsl",
+      "yaml",
+      "bat",
+      "clojure",
+      "coffee",
+      "c",
+      "cpp",
+      "diff",
+      "docker",
+      "git-commit",
+      "git-rebase",
+      "go",
+      "groovy",
+      "pug",
+      "javascript",
+      "json",
+      "jsonc",
+      "less",
+      "objective-c",
+      "swift",
+      "scss",
+      "raku",
+      "powershell",
+      "python",
+      "julia",
+      "rust",
+      "scala",
+      "shellscript",
+      "typescript",
+      "tsx",
+      "csharp",
+      "fsharp",
+      "dart",
+      "handlebars",
+      "erlang",
+      "elixir",
+      "latex",
+      "bibtex",
+    ],
   },
   {
     id: "marko",
     scopeName: "text.marko",
     path: "marko.tmLanguage.json",
-    embeddedLangs: ["css", "less", "scss", "typescript"]
+    embeddedLangs: ["css", "less", "scss", "typescript"],
   },
   {
     id: "matlab",
     scopeName: "source.matlab",
-    path: "matlab.tmLanguage.json"
+    path: "matlab.tmLanguage.json",
   },
   {
     id: "mdx",
     scopeName: "text.html.markdown.jsx",
     path: "mdx.tmLanguage.json",
-    embeddedLangs: ["jsx", "markdown"]
+    embeddedLangs: ["jsx", "markdown"],
   },
   {
     id: "mermaid",
     scopeName: "source.mermaid",
-    path: "mermaid.tmLanguage.json"
+    path: "mermaid.tmLanguage.json",
   },
   {
     id: "nginx",
     scopeName: "source.nginx",
     path: "nginx.tmLanguage.json",
-    embeddedLangs: ["lua"]
+    embeddedLangs: ["lua"],
   },
   {
     id: "nim",
     scopeName: "source.nim",
     path: "nim.tmLanguage.json",
-    embeddedLangs: ["c", "html", "xml", "javascript", "css", "glsl", "markdown"]
+    embeddedLangs: [
+      "c",
+      "html",
+      "xml",
+      "javascript",
+      "css",
+      "glsl",
+      "markdown",
+    ],
   },
   {
     id: "nix",
     scopeName: "source.nix",
-    path: "nix.tmLanguage.json"
+    path: "nix.tmLanguage.json",
   },
   {
     id: "objective-c",
     scopeName: "source.objc",
     path: "objective-c.tmLanguage.json",
-    aliases: ["objc"]
+    aliases: ["objc"],
   },
   {
     id: "objective-cpp",
     scopeName: "source.objcpp",
-    path: "objective-cpp.tmLanguage.json"
+    path: "objective-cpp.tmLanguage.json",
   },
   {
     id: "ocaml",
     scopeName: "source.ocaml",
-    path: "ocaml.tmLanguage.json"
+    path: "ocaml.tmLanguage.json",
   },
   {
     id: "pascal",
     scopeName: "source.pascal",
-    path: "pascal.tmLanguage.json"
+    path: "pascal.tmLanguage.json",
   },
   {
     id: "perl",
     scopeName: "source.perl",
     path: "perl.tmLanguage.json",
-    embeddedLangs: ["html", "xml", "css", "javascript", "sql"]
+    embeddedLangs: ["html", "xml", "css", "javascript", "sql"],
   },
   {
     id: "php",
     scopeName: "source.php",
     path: "php.tmLanguage.json",
-    embeddedLangs: ["html", "xml", "sql", "javascript", "json", "css"]
+    embeddedLangs: ["html", "xml", "sql", "javascript", "json", "css"],
   },
   {
     id: "plsql",
     scopeName: "source.plsql.oracle",
-    path: "plsql.tmLanguage.json"
+    path: "plsql.tmLanguage.json",
   },
   {
     id: "postcss",
     scopeName: "source.css.postcss",
-    path: "postcss.tmLanguage.json"
+    path: "postcss.tmLanguage.json",
   },
   {
     id: "powershell",
     scopeName: "source.powershell",
     path: "powershell.tmLanguage.json",
-    aliases: ["ps", "ps1"]
+    aliases: ["ps", "ps1"],
   },
   {
     id: "prisma",
     scopeName: "source.prisma",
     path: "prisma.tmLanguage.json",
-    samplePath: "prisma.sample"
+    samplePath: "prisma.sample",
   },
   {
     id: "prolog",
     scopeName: "source.prolog",
-    path: "prolog.tmLanguage.json"
+    path: "prolog.tmLanguage.json",
   },
   {
     id: "proto",
     scopeName: "source.proto",
     path: "proto.tmLanguage.json",
-    samplePath: "proto.sample"
+    samplePath: "proto.sample",
   },
   {
     id: "pug",
     scopeName: "text.pug",
     path: "pug.tmLanguage.json",
     aliases: ["jade"],
-    embeddedLangs: ["javascript", "css", "sass", "scss", "stylus", "coffee", "html"]
+    embeddedLangs: [
+      "javascript",
+      "css",
+      "sass",
+      "scss",
+      "stylus",
+      "coffee",
+      "html",
+    ],
   },
   {
     id: "puppet",
     scopeName: "source.puppet",
-    path: "puppet.tmLanguage.json"
+    path: "puppet.tmLanguage.json",
   },
   {
     id: "purescript",
     scopeName: "source.purescript",
-    path: "purescript.tmLanguage.json"
+    path: "purescript.tmLanguage.json",
   },
   {
     id: "python",
     scopeName: "source.python",
     path: "python.tmLanguage.json",
     samplePath: "python.sample",
-    aliases: ["py"]
+    aliases: ["py"],
   },
   {
     id: "r",
     scopeName: "source.r",
-    path: "r.tmLanguage.json"
+    path: "r.tmLanguage.json",
   },
   {
     id: "raku",
     scopeName: "source.perl.6",
     path: "raku.tmLanguage.json",
-    aliases: ["perl6"]
+    aliases: ["perl6"],
   },
   {
     id: "razor",
     scopeName: "text.aspnetcorerazor",
     path: "razor.tmLanguage.json",
-    embeddedLangs: ["html", "csharp"]
+    embeddedLangs: ["html", "csharp"],
   },
   {
     id: "rel",
     scopeName: "source.rel",
     path: "rel.tmLanguage.json",
-    samplePath: "rel.sample"
+    samplePath: "rel.sample",
   },
   {
     id: "riscv",
     scopeName: "source.riscv",
-    path: "riscv.tmLanguage.json"
+    path: "riscv.tmLanguage.json",
   },
   {
     id: "rst",
     scopeName: "source.rst",
     path: "rst.tmLanguage.json",
-    embeddedLangs: ["cpp", "python", "javascript", "shellscript", "yaml", "cmake", "ruby"]
+    embeddedLangs: [
+      "cpp",
+      "python",
+      "javascript",
+      "shellscript",
+      "yaml",
+      "cmake",
+      "ruby",
+    ],
   },
   {
     id: "ruby",
@@ -673,238 +780,277 @@ const languages = [
     path: "ruby.tmLanguage.json",
     samplePath: "ruby.sample",
     aliases: ["rb"],
-    embeddedLangs: ["html", "xml", "sql", "css", "c", "javascript", "shellscript", "lua"]
+    embeddedLangs: [
+      "html",
+      "xml",
+      "sql",
+      "css",
+      "c",
+      "javascript",
+      "shellscript",
+      "lua",
+    ],
   },
   {
     id: "rust",
     scopeName: "source.rust",
     path: "rust.tmLanguage.json",
-    aliases: ["rs"]
+    aliases: ["rs"],
   },
   {
     id: "sas",
     scopeName: "source.sas",
     path: "sas.tmLanguage.json",
-    embeddedLangs: ["sql"]
+    embeddedLangs: ["sql"],
   },
   {
     id: "sass",
     scopeName: "source.sass",
-    path: "sass.tmLanguage.json"
+    path: "sass.tmLanguage.json",
   },
   {
     id: "scala",
     scopeName: "source.scala",
-    path: "scala.tmLanguage.json"
+    path: "scala.tmLanguage.json",
   },
   {
     id: "scheme",
     scopeName: "source.scheme",
-    path: "scheme.tmLanguage.json"
+    path: "scheme.tmLanguage.json",
   },
   {
     id: "scss",
     scopeName: "source.css.scss",
     path: "scss.tmLanguage.json",
-    embeddedLangs: ["css"]
+    embeddedLangs: ["css"],
   },
   {
     id: "shaderlab",
     scopeName: "source.shaderlab",
     path: "shaderlab.tmLanguage.json",
     aliases: ["shader"],
-    embeddedLangs: ["hlsl"]
+    embeddedLangs: ["hlsl"],
   },
   {
     id: "shellscript",
     scopeName: "source.shell",
     path: "shellscript.tmLanguage.json",
-    aliases: ["shell", "bash", "sh", "zsh"]
+    aliases: ["shell", "bash", "sh", "zsh"],
   },
   {
     id: "smalltalk",
     scopeName: "source.smalltalk",
-    path: "smalltalk.tmLanguage.json"
+    path: "smalltalk.tmLanguage.json",
   },
   {
     id: "solidity",
     scopeName: "source.solidity",
-    path: "solidity.tmLanguage.json"
+    path: "solidity.tmLanguage.json",
   },
   {
     id: "sparql",
     scopeName: "source.sparql",
     path: "sparql.tmLanguage.json",
     samplePath: "sparql.sample",
-    embeddedLangs: ["turtle"]
+    embeddedLangs: ["turtle"],
   },
   {
     id: "sql",
     scopeName: "source.sql",
-    path: "sql.tmLanguage.json"
+    path: "sql.tmLanguage.json",
   },
   {
     id: "ssh-config",
     scopeName: "source.ssh-config",
-    path: "ssh-config.tmLanguage.json"
+    path: "ssh-config.tmLanguage.json",
   },
   {
     id: "stata",
     scopeName: "source.stata",
     path: "stata.tmLanguage.json",
     samplePath: "stata.sample",
-    embeddedLangs: ["sql"]
+    embeddedLangs: ["sql"],
   },
   {
     id: "stylus",
     scopeName: "source.stylus",
     path: "stylus.tmLanguage.json",
-    aliases: ["styl"]
+    aliases: ["styl"],
   },
   {
     id: "svelte",
     scopeName: "source.svelte",
     path: "svelte.tmLanguage.json",
-    embeddedLangs: ["javascript", "typescript", "coffee", "stylus", "sass", "css", "scss", "less", "postcss", "pug", "markdown"]
+    embeddedLangs: [
+      "javascript",
+      "typescript",
+      "coffee",
+      "stylus",
+      "sass",
+      "css",
+      "scss",
+      "less",
+      "postcss",
+      "pug",
+      "markdown",
+    ],
   },
   {
     id: "swift",
     scopeName: "source.swift",
-    path: "swift.tmLanguage.json"
+    path: "swift.tmLanguage.json",
   },
   {
     id: "system-verilog",
     scopeName: "source.systemverilog",
-    path: "system-verilog.tmLanguage.json"
+    path: "system-verilog.tmLanguage.json",
   },
   {
     id: "tasl",
     scopeName: "source.tasl",
     path: "tasl.tmLanguage.json",
-    samplePath: "tasl.sample"
+    samplePath: "tasl.sample",
   },
   {
     id: "tcl",
     scopeName: "source.tcl",
-    path: "tcl.tmLanguage.json"
+    path: "tcl.tmLanguage.json",
   },
   {
     id: "tex",
     scopeName: "text.tex",
     path: "tex.tmLanguage.json",
-    embeddedLangs: ["r"]
+    embeddedLangs: ["r"],
   },
   {
     id: "toml",
     scopeName: "source.toml",
-    path: "toml.tmLanguage.json"
+    path: "toml.tmLanguage.json",
   },
   {
     id: "tsx",
     scopeName: "source.tsx",
     path: "tsx.tmLanguage.json",
-    samplePath: "tsx.sample"
+    samplePath: "tsx.sample",
   },
   {
     id: "turtle",
     scopeName: "source.turtle",
     path: "turtle.tmLanguage.json",
-    samplePath: "turtle.sample"
+    samplePath: "turtle.sample",
   },
   {
     id: "twig",
     scopeName: "text.html.twig",
     path: "twig.tmLanguage.json",
-    embeddedLangs: ["css", "javascript", "php", "python", "ruby"]
+    embeddedLangs: ["css", "javascript", "php", "python", "ruby"],
   },
   {
     id: "typescript",
     scopeName: "source.ts",
     path: "typescript.tmLanguage.json",
-    aliases: ["ts"]
+    aliases: ["ts"],
   },
   {
     id: "v",
     scopeName: "source.v",
     path: "v.tmLanguage.json",
-    samplePath: "v.sample"
+    samplePath: "v.sample",
   },
   {
     id: "vb",
     scopeName: "source.asp.vb.net",
     path: "vb.tmLanguage.json",
-    aliases: ["cmd"]
+    aliases: ["cmd"],
   },
   {
     id: "verilog",
     scopeName: "source.verilog",
-    path: "verilog.tmLanguage.json"
+    path: "verilog.tmLanguage.json",
   },
   {
     id: "vhdl",
     scopeName: "source.vhdl",
-    path: "vhdl.tmLanguage.json"
+    path: "vhdl.tmLanguage.json",
   },
   {
     id: "viml",
     scopeName: "source.viml",
     path: "viml.tmLanguage.json",
-    aliases: ["vim", "vimscript"]
+    aliases: ["vim", "vimscript"],
   },
   {
     id: "vue-html",
     scopeName: "text.html.vue-html",
     path: "vue-html.tmLanguage.json",
-    embeddedLangs: ["vue", "javascript"]
+    embeddedLangs: ["vue", "javascript"],
   },
   {
     id: "vue",
     scopeName: "source.vue",
     path: "vue.tmLanguage.json",
-    embeddedLangs: ["html", "markdown", "pug", "stylus", "sass", "css", "scss", "less", "javascript", "typescript", "jsx", "tsx", "json", "jsonc", "yaml", "toml", "graphql"]
+    embeddedLangs: [
+      "html",
+      "markdown",
+      "pug",
+      "stylus",
+      "sass",
+      "css",
+      "scss",
+      "less",
+      "javascript",
+      "typescript",
+      "jsx",
+      "tsx",
+      "json",
+      "jsonc",
+      "yaml",
+      "toml",
+      "graphql",
+    ],
   },
   {
     id: "wasm",
     scopeName: "source.wat",
-    path: "wasm.tmLanguage.json"
+    path: "wasm.tmLanguage.json",
   },
   {
     id: "wenyan",
     scopeName: "source.wenyan",
     path: "wenyan.tmLanguage.json",
-    aliases: ["\u6587\u8A00"]
+    aliases: ["\u6587\u8A00"],
   },
   {
     id: "xml",
     scopeName: "text.xml",
     path: "xml.tmLanguage.json",
-    embeddedLangs: ["java"]
+    embeddedLangs: ["java"],
   },
   {
     id: "xsl",
     scopeName: "text.xml.xsl",
     path: "xsl.tmLanguage.json",
-    embeddedLangs: ["xml"]
+    embeddedLangs: ["xml"],
   },
   {
     id: "yaml",
     scopeName: "source.yaml",
-    path: "yaml.tmLanguage.json"
+    path: "yaml.tmLanguage.json",
   },
   {
     id: "zenscript",
     scopeName: "source.zenscript",
     path: "zenscript.tmLanguage.json",
-    samplePath: "zenscript.sample"
-  }
+    samplePath: "zenscript.sample",
+  },
 ];
 
 var FontStyle = /* @__PURE__ */ ((FontStyle2) => {
-  FontStyle2[FontStyle2["NotSet"] = -1] = "NotSet";
-  FontStyle2[FontStyle2["None"] = 0] = "None";
-  FontStyle2[FontStyle2["Italic"] = 1] = "Italic";
-  FontStyle2[FontStyle2["Bold"] = 2] = "Bold";
-  FontStyle2[FontStyle2["Underline"] = 4] = "Underline";
+  FontStyle2[(FontStyle2["NotSet"] = -1)] = "NotSet";
+  FontStyle2[(FontStyle2["None"] = 0)] = "None";
+  FontStyle2[(FontStyle2["Italic"] = 1)] = "Italic";
+  FontStyle2[(FontStyle2["Bold"] = 2)] = "Bold";
+  FontStyle2[(FontStyle2["Underline"] = 4)] = "Underline";
   return FontStyle2;
 })(FontStyle || {});
 class StackElementMetadata {
@@ -926,41 +1072,55 @@ class StackElementMetadata {
       tokenType,
       fontStyle,
       foreground,
-      background
+      background,
     });
   }
   static getLanguageId(metadata) {
-    return (metadata & 255 /* LANGUAGEID_MASK */) >>> 0 /* LANGUAGEID_OFFSET */;
+    return (metadata & 255) /* LANGUAGEID_MASK */ >>> 0 /* LANGUAGEID_OFFSET */;
   }
   static getTokenType(metadata) {
-    return (metadata & 768 /* TOKEN_TYPE_MASK */) >>> 8 /* TOKEN_TYPE_OFFSET */;
+    return (metadata & 768) /* TOKEN_TYPE_MASK */ >>> 8 /* TOKEN_TYPE_OFFSET */;
   }
   static getFontStyle(metadata) {
-    return (metadata & 14336 /* FONT_STYLE_MASK */) >>> 11 /* FONT_STYLE_OFFSET */;
+    return (
+      (metadata & 14336) /* FONT_STYLE_MASK */ >>> 11 /* FONT_STYLE_OFFSET */
+    );
   }
   static getForeground(metadata) {
-    return (metadata & 8372224 /* FOREGROUND_MASK */) >>> 15 /* FOREGROUND_OFFSET */;
+    return (
+      (metadata & 8372224) /* FOREGROUND_MASK */ >>> 15 /* FOREGROUND_OFFSET */
+    );
   }
   static getBackground(metadata) {
-    return (metadata & 4286578688 /* BACKGROUND_MASK */) >>> 24 /* BACKGROUND_OFFSET */;
+    return (
+      (metadata & 4286578688) /* BACKGROUND_MASK */ >>>
+      24 /* BACKGROUND_OFFSET */
+    );
   }
   static containsBalancedBrackets(metadata) {
-    return (metadata & 1024 /* BALANCED_BRACKETS_MASK */) !== 0;
+    return (metadata & 1024) /* BALANCED_BRACKETS_MASK */ !== 0;
   }
-  static set(metadata, languageId, tokenType, fontStyle, foreground, background) {
+  static set(
+    metadata,
+    languageId,
+    tokenType,
+    fontStyle,
+    foreground,
+    background
+  ) {
     let _languageId = StackElementMetadata.getLanguageId(metadata);
     let _tokenType = StackElementMetadata.getTokenType(metadata);
     let _fontStyle = StackElementMetadata.getFontStyle(metadata);
     let _foreground = StackElementMetadata.getForeground(metadata);
     let _background = StackElementMetadata.getBackground(metadata);
-    let _containsBalancedBracketsBit = StackElementMetadata.containsBalancedBrackets(
-      metadata
-    ) ? 1 : 0;
+    let _containsBalancedBracketsBit =
+      StackElementMetadata.containsBalancedBrackets(metadata) ? 1 : 0;
     if (languageId !== 0) {
       _languageId = languageId;
     }
     if (tokenType !== 0 /* Other */) {
-      _tokenType = tokenType === 8 /* MetaEmbedded */ ? 0 /* Other */ : tokenType;
+      _tokenType =
+        tokenType === 8 /* MetaEmbedded */ ? 0 /* Other */ : tokenType;
     }
     if (fontStyle !== -1 /* NotSet */) {
       _fontStyle = fontStyle;
@@ -971,18 +1131,24 @@ class StackElementMetadata {
     if (background !== 0) {
       _background = background;
     }
-    return (_languageId << 0 /* LANGUAGEID_OFFSET */ | _tokenType << 8 /* TOKEN_TYPE_OFFSET */ | _fontStyle << 11 /* FONT_STYLE_OFFSET */ | _containsBalancedBracketsBit << 10 /* BALANCED_BRACKETS_OFFSET */ | _foreground << 15 /* FOREGROUND_OFFSET */ | _background << 24 /* BACKGROUND_OFFSET */) >>> 0;
+    return (
+      ((_languageId << 0) /* LANGUAGEID_OFFSET */ |
+        (_tokenType << 8) /* TOKEN_TYPE_OFFSET */ |
+        (_fontStyle << 11) /* FONT_STYLE_OFFSET */ |
+        (_containsBalancedBracketsBit << 10) /* BALANCED_BRACKETS_OFFSET */ |
+        (_foreground << 15) /* FOREGROUND_OFFSET */ |
+        (_background << 24)) /* BACKGROUND_OFFSET */ >>>
+      0
+    );
   }
 }
 
 function trimEndSlash(str) {
-  if (str.endsWith("/") || str.endsWith("\\"))
-    return str.slice(0, -1);
+  if (str.endsWith("/") || str.endsWith("\\")) return str.slice(0, -1);
   return str;
 }
 function trimStartDot(str) {
-  if (str.startsWith("./"))
-    return str.slice(2);
+  if (str.startsWith("./")) return str.slice(2);
   return str;
 }
 function dirpathparts(str) {
@@ -1015,438 +1181,479 @@ function groupBy(elements, keyGetter) {
  * If ignoreTrivia is set, whitespaces or comments are ignored.
  */
 function createScanner(text, ignoreTrivia = false) {
-    const len = text.length;
-    let pos = 0, value = '', tokenOffset = 0, token = 16 /* SyntaxKind.Unknown */, lineNumber = 0, lineStartOffset = 0, tokenLineStartOffset = 0, prevTokenLineStartOffset = 0, scanError = 0 /* ScanError.None */;
-    function scanHexDigits(count, exact) {
-        let digits = 0;
-        let value = 0;
-        while (digits < count || !exact) {
-            let ch = text.charCodeAt(pos);
-            if (ch >= 48 /* CharacterCodes._0 */ && ch <= 57 /* CharacterCodes._9 */) {
-                value = value * 16 + ch - 48 /* CharacterCodes._0 */;
-            }
-            else if (ch >= 65 /* CharacterCodes.A */ && ch <= 70 /* CharacterCodes.F */) {
-                value = value * 16 + ch - 65 /* CharacterCodes.A */ + 10;
-            }
-            else if (ch >= 97 /* CharacterCodes.a */ && ch <= 102 /* CharacterCodes.f */) {
-                value = value * 16 + ch - 97 /* CharacterCodes.a */ + 10;
-            }
-            else {
-                break;
-            }
-            pos++;
-            digits++;
-        }
-        if (digits < count) {
-            value = -1;
-        }
-        return value;
+  const len = text.length;
+  let pos = 0,
+    value = "",
+    tokenOffset = 0,
+    token = 16 /* SyntaxKind.Unknown */,
+    lineNumber = 0,
+    lineStartOffset = 0,
+    tokenLineStartOffset = 0,
+    prevTokenLineStartOffset = 0,
+    scanError = 0; /* ScanError.None */
+  function scanHexDigits(count, exact) {
+    let digits = 0;
+    let value = 0;
+    while (digits < count || !exact) {
+      let ch = text.charCodeAt(pos);
+      if (
+        ch >= 48 /* CharacterCodes._0 */ &&
+        ch <= 57 /* CharacterCodes._9 */
+      ) {
+        value = value * 16 + ch - 48 /* CharacterCodes._0 */;
+      } else if (
+        ch >= 65 /* CharacterCodes.A */ &&
+        ch <= 70 /* CharacterCodes.F */
+      ) {
+        value = value * 16 + ch - 65 /* CharacterCodes.A */ + 10;
+      } else if (
+        ch >= 97 /* CharacterCodes.a */ &&
+        ch <= 102 /* CharacterCodes.f */
+      ) {
+        value = value * 16 + ch - 97 /* CharacterCodes.a */ + 10;
+      } else {
+        break;
+      }
+      pos++;
+      digits++;
     }
-    function setPosition(newPosition) {
-        pos = newPosition;
-        value = '';
-        tokenOffset = 0;
-        token = 16 /* SyntaxKind.Unknown */;
-        scanError = 0 /* ScanError.None */;
+    if (digits < count) {
+      value = -1;
     }
-    function scanNumber() {
-        let start = pos;
-        if (text.charCodeAt(pos) === 48 /* CharacterCodes._0 */) {
-            pos++;
-        }
-        else {
-            pos++;
-            while (pos < text.length && isDigit(text.charCodeAt(pos))) {
-                pos++;
-            }
-        }
-        if (pos < text.length && text.charCodeAt(pos) === 46 /* CharacterCodes.dot */) {
-            pos++;
-            if (pos < text.length && isDigit(text.charCodeAt(pos))) {
-                pos++;
-                while (pos < text.length && isDigit(text.charCodeAt(pos))) {
-                    pos++;
-                }
-            }
-            else {
-                scanError = 3 /* ScanError.UnexpectedEndOfNumber */;
-                return text.substring(start, pos);
-            }
-        }
-        let end = pos;
-        if (pos < text.length && (text.charCodeAt(pos) === 69 /* CharacterCodes.E */ || text.charCodeAt(pos) === 101 /* CharacterCodes.e */)) {
-            pos++;
-            if (pos < text.length && text.charCodeAt(pos) === 43 /* CharacterCodes.plus */ || text.charCodeAt(pos) === 45 /* CharacterCodes.minus */) {
-                pos++;
-            }
-            if (pos < text.length && isDigit(text.charCodeAt(pos))) {
-                pos++;
-                while (pos < text.length && isDigit(text.charCodeAt(pos))) {
-                    pos++;
-                }
-                end = pos;
-            }
-            else {
-                scanError = 3 /* ScanError.UnexpectedEndOfNumber */;
-            }
-        }
-        return text.substring(start, end);
+    return value;
+  }
+  function setPosition(newPosition) {
+    pos = newPosition;
+    value = "";
+    tokenOffset = 0;
+    token = 16 /* SyntaxKind.Unknown */;
+    scanError = 0 /* ScanError.None */;
+  }
+  function scanNumber() {
+    let start = pos;
+    if (text.charCodeAt(pos) === 48 /* CharacterCodes._0 */) {
+      pos++;
+    } else {
+      pos++;
+      while (pos < text.length && isDigit(text.charCodeAt(pos))) {
+        pos++;
+      }
     }
-    function scanString() {
-        let result = '', start = pos;
-        while (true) {
-            if (pos >= len) {
-                result += text.substring(start, pos);
-                scanError = 2 /* ScanError.UnexpectedEndOfString */;
-                break;
-            }
-            const ch = text.charCodeAt(pos);
-            if (ch === 34 /* CharacterCodes.doubleQuote */) {
-                result += text.substring(start, pos);
-                pos++;
-                break;
-            }
-            if (ch === 92 /* CharacterCodes.backslash */) {
-                result += text.substring(start, pos);
-                pos++;
-                if (pos >= len) {
-                    scanError = 2 /* ScanError.UnexpectedEndOfString */;
-                    break;
-                }
-                const ch2 = text.charCodeAt(pos++);
-                switch (ch2) {
-                    case 34 /* CharacterCodes.doubleQuote */:
-                        result += '\"';
-                        break;
-                    case 92 /* CharacterCodes.backslash */:
-                        result += '\\';
-                        break;
-                    case 47 /* CharacterCodes.slash */:
-                        result += '/';
-                        break;
-                    case 98 /* CharacterCodes.b */:
-                        result += '\b';
-                        break;
-                    case 102 /* CharacterCodes.f */:
-                        result += '\f';
-                        break;
-                    case 110 /* CharacterCodes.n */:
-                        result += '\n';
-                        break;
-                    case 114 /* CharacterCodes.r */:
-                        result += '\r';
-                        break;
-                    case 116 /* CharacterCodes.t */:
-                        result += '\t';
-                        break;
-                    case 117 /* CharacterCodes.u */:
-                        const ch3 = scanHexDigits(4, true);
-                        if (ch3 >= 0) {
-                            result += String.fromCharCode(ch3);
-                        }
-                        else {
-                            scanError = 4 /* ScanError.InvalidUnicode */;
-                        }
-                        break;
-                    default:
-                        scanError = 5 /* ScanError.InvalidEscapeCharacter */;
-                }
-                start = pos;
-                continue;
-            }
-            if (ch >= 0 && ch <= 0x1f) {
-                if (isLineBreak(ch)) {
-                    result += text.substring(start, pos);
-                    scanError = 2 /* ScanError.UnexpectedEndOfString */;
-                    break;
-                }
-                else {
-                    scanError = 6 /* ScanError.InvalidCharacter */;
-                    // mark as error but continue with string
-                }
-            }
-            pos++;
+    if (
+      pos < text.length &&
+      text.charCodeAt(pos) === 46 /* CharacterCodes.dot */
+    ) {
+      pos++;
+      if (pos < text.length && isDigit(text.charCodeAt(pos))) {
+        pos++;
+        while (pos < text.length && isDigit(text.charCodeAt(pos))) {
+          pos++;
         }
-        return result;
+      } else {
+        scanError = 3 /* ScanError.UnexpectedEndOfNumber */;
+        return text.substring(start, pos);
+      }
     }
-    function scanNext() {
-        value = '';
-        scanError = 0 /* ScanError.None */;
-        tokenOffset = pos;
-        lineStartOffset = lineNumber;
-        prevTokenLineStartOffset = tokenLineStartOffset;
+    let end = pos;
+    if (
+      pos < text.length &&
+      (text.charCodeAt(pos) === 69 /* CharacterCodes.E */ ||
+        text.charCodeAt(pos) === 101) /* CharacterCodes.e */
+    ) {
+      pos++;
+      if (
+        (pos < text.length &&
+          text.charCodeAt(pos) === 43) /* CharacterCodes.plus */ ||
+        text.charCodeAt(pos) === 45 /* CharacterCodes.minus */
+      ) {
+        pos++;
+      }
+      if (pos < text.length && isDigit(text.charCodeAt(pos))) {
+        pos++;
+        while (pos < text.length && isDigit(text.charCodeAt(pos))) {
+          pos++;
+        }
+        end = pos;
+      } else {
+        scanError = 3 /* ScanError.UnexpectedEndOfNumber */;
+      }
+    }
+    return text.substring(start, end);
+  }
+  function scanString() {
+    let result = "",
+      start = pos;
+    while (true) {
+      if (pos >= len) {
+        result += text.substring(start, pos);
+        scanError = 2 /* ScanError.UnexpectedEndOfString */;
+        break;
+      }
+      const ch = text.charCodeAt(pos);
+      if (ch === 34 /* CharacterCodes.doubleQuote */) {
+        result += text.substring(start, pos);
+        pos++;
+        break;
+      }
+      if (ch === 92 /* CharacterCodes.backslash */) {
+        result += text.substring(start, pos);
+        pos++;
         if (pos >= len) {
-            // at the end
-            tokenOffset = len;
-            return token = 17 /* SyntaxKind.EOF */;
+          scanError = 2 /* ScanError.UnexpectedEndOfString */;
+          break;
         }
-        let code = text.charCodeAt(pos);
-        // trivia: whitespace
-        if (isWhiteSpace(code)) {
-            do {
-                pos++;
-                value += String.fromCharCode(code);
-                code = text.charCodeAt(pos);
-            } while (isWhiteSpace(code));
-            return token = 15 /* SyntaxKind.Trivia */;
-        }
-        // trivia: newlines
-        if (isLineBreak(code)) {
-            pos++;
-            value += String.fromCharCode(code);
-            if (code === 13 /* CharacterCodes.carriageReturn */ && text.charCodeAt(pos) === 10 /* CharacterCodes.lineFeed */) {
-                pos++;
-                value += '\n';
+        const ch2 = text.charCodeAt(pos++);
+        switch (ch2) {
+          case 34 /* CharacterCodes.doubleQuote */:
+            result += '"';
+            break;
+          case 92 /* CharacterCodes.backslash */:
+            result += "\\";
+            break;
+          case 47 /* CharacterCodes.slash */:
+            result += "/";
+            break;
+          case 98 /* CharacterCodes.b */:
+            result += "\b";
+            break;
+          case 102 /* CharacterCodes.f */:
+            result += "\f";
+            break;
+          case 110 /* CharacterCodes.n */:
+            result += "\n";
+            break;
+          case 114 /* CharacterCodes.r */:
+            result += "\r";
+            break;
+          case 116 /* CharacterCodes.t */:
+            result += "\t";
+            break;
+          case 117 /* CharacterCodes.u */:
+            const ch3 = scanHexDigits(4, true);
+            if (ch3 >= 0) {
+              result += String.fromCharCode(ch3);
+            } else {
+              scanError = 4 /* ScanError.InvalidUnicode */;
             }
-            lineNumber++;
-            tokenLineStartOffset = pos;
-            return token = 14 /* SyntaxKind.LineBreakTrivia */;
+            break;
+          default:
+            scanError = 5 /* ScanError.InvalidEscapeCharacter */;
         }
-        switch (code) {
-            // tokens: []{}:,
-            case 123 /* CharacterCodes.openBrace */:
-                pos++;
-                return token = 1 /* SyntaxKind.OpenBraceToken */;
-            case 125 /* CharacterCodes.closeBrace */:
-                pos++;
-                return token = 2 /* SyntaxKind.CloseBraceToken */;
-            case 91 /* CharacterCodes.openBracket */:
-                pos++;
-                return token = 3 /* SyntaxKind.OpenBracketToken */;
-            case 93 /* CharacterCodes.closeBracket */:
-                pos++;
-                return token = 4 /* SyntaxKind.CloseBracketToken */;
-            case 58 /* CharacterCodes.colon */:
-                pos++;
-                return token = 6 /* SyntaxKind.ColonToken */;
-            case 44 /* CharacterCodes.comma */:
-                pos++;
-                return token = 5 /* SyntaxKind.CommaToken */;
-            // strings
-            case 34 /* CharacterCodes.doubleQuote */:
-                pos++;
-                value = scanString();
-                return token = 10 /* SyntaxKind.StringLiteral */;
-            // comments
-            case 47 /* CharacterCodes.slash */:
-                const start = pos - 1;
-                // Single-line comment
-                if (text.charCodeAt(pos + 1) === 47 /* CharacterCodes.slash */) {
-                    pos += 2;
-                    while (pos < len) {
-                        if (isLineBreak(text.charCodeAt(pos))) {
-                            break;
-                        }
-                        pos++;
-                    }
-                    value = text.substring(start, pos);
-                    return token = 12 /* SyntaxKind.LineCommentTrivia */;
-                }
-                // Multi-line comment
-                if (text.charCodeAt(pos + 1) === 42 /* CharacterCodes.asterisk */) {
-                    pos += 2;
-                    const safeLength = len - 1; // For lookahead.
-                    let commentClosed = false;
-                    while (pos < safeLength) {
-                        const ch = text.charCodeAt(pos);
-                        if (ch === 42 /* CharacterCodes.asterisk */ && text.charCodeAt(pos + 1) === 47 /* CharacterCodes.slash */) {
-                            pos += 2;
-                            commentClosed = true;
-                            break;
-                        }
-                        pos++;
-                        if (isLineBreak(ch)) {
-                            if (ch === 13 /* CharacterCodes.carriageReturn */ && text.charCodeAt(pos) === 10 /* CharacterCodes.lineFeed */) {
-                                pos++;
-                            }
-                            lineNumber++;
-                            tokenLineStartOffset = pos;
-                        }
-                    }
-                    if (!commentClosed) {
-                        pos++;
-                        scanError = 1 /* ScanError.UnexpectedEndOfComment */;
-                    }
-                    value = text.substring(start, pos);
-                    return token = 13 /* SyntaxKind.BlockCommentTrivia */;
-                }
-                // just a single slash
-                value += String.fromCharCode(code);
-                pos++;
-                return token = 16 /* SyntaxKind.Unknown */;
-            // numbers
-            case 45 /* CharacterCodes.minus */:
-                value += String.fromCharCode(code);
-                pos++;
-                if (pos === len || !isDigit(text.charCodeAt(pos))) {
-                    return token = 16 /* SyntaxKind.Unknown */;
-                }
-            // found a minus, followed by a number so
-            // we fall through to proceed with scanning
-            // numbers
-            case 48 /* CharacterCodes._0 */:
-            case 49 /* CharacterCodes._1 */:
-            case 50 /* CharacterCodes._2 */:
-            case 51 /* CharacterCodes._3 */:
-            case 52 /* CharacterCodes._4 */:
-            case 53 /* CharacterCodes._5 */:
-            case 54 /* CharacterCodes._6 */:
-            case 55 /* CharacterCodes._7 */:
-            case 56 /* CharacterCodes._8 */:
-            case 57 /* CharacterCodes._9 */:
-                value += scanNumber();
-                return token = 11 /* SyntaxKind.NumericLiteral */;
-            // literals and unknown symbols
-            default:
-                // is a literal? Read the full word.
-                while (pos < len && isUnknownContentCharacter(code)) {
-                    pos++;
-                    code = text.charCodeAt(pos);
-                }
-                if (tokenOffset !== pos) {
-                    value = text.substring(tokenOffset, pos);
-                    // keywords: true, false, null
-                    switch (value) {
-                        case 'true': return token = 8 /* SyntaxKind.TrueKeyword */;
-                        case 'false': return token = 9 /* SyntaxKind.FalseKeyword */;
-                        case 'null': return token = 7 /* SyntaxKind.NullKeyword */;
-                    }
-                    return token = 16 /* SyntaxKind.Unknown */;
-                }
-                // some
-                value += String.fromCharCode(code);
-                pos++;
-                return token = 16 /* SyntaxKind.Unknown */;
+        start = pos;
+        continue;
+      }
+      if (ch >= 0 && ch <= 0x1f) {
+        if (isLineBreak(ch)) {
+          result += text.substring(start, pos);
+          scanError = 2 /* ScanError.UnexpectedEndOfString */;
+          break;
+        } else {
+          scanError = 6 /* ScanError.InvalidCharacter */;
+          // mark as error but continue with string
         }
+      }
+      pos++;
     }
-    function isUnknownContentCharacter(code) {
-        if (isWhiteSpace(code) || isLineBreak(code)) {
-            return false;
-        }
-        switch (code) {
-            case 125 /* CharacterCodes.closeBrace */:
-            case 93 /* CharacterCodes.closeBracket */:
-            case 123 /* CharacterCodes.openBrace */:
-            case 91 /* CharacterCodes.openBracket */:
-            case 34 /* CharacterCodes.doubleQuote */:
-            case 58 /* CharacterCodes.colon */:
-            case 44 /* CharacterCodes.comma */:
-            case 47 /* CharacterCodes.slash */:
-                return false;
-        }
-        return true;
+    return result;
+  }
+  function scanNext() {
+    value = "";
+    scanError = 0 /* ScanError.None */;
+    tokenOffset = pos;
+    lineStartOffset = lineNumber;
+    prevTokenLineStartOffset = tokenLineStartOffset;
+    if (pos >= len) {
+      // at the end
+      tokenOffset = len;
+      return (token = 17) /* SyntaxKind.EOF */;
     }
-    function scanNextNonTrivia() {
-        let result;
-        do {
-            result = scanNext();
-        } while (result >= 12 /* SyntaxKind.LineCommentTrivia */ && result <= 15 /* SyntaxKind.Trivia */);
-        return result;
+    let code = text.charCodeAt(pos);
+    // trivia: whitespace
+    if (isWhiteSpace(code)) {
+      do {
+        pos++;
+        value += String.fromCharCode(code);
+        code = text.charCodeAt(pos);
+      } while (isWhiteSpace(code));
+      return (token = 15) /* SyntaxKind.Trivia */;
     }
-    return {
-        setPosition: setPosition,
-        getPosition: () => pos,
-        scan: ignoreTrivia ? scanNextNonTrivia : scanNext,
-        getToken: () => token,
-        getTokenValue: () => value,
-        getTokenOffset: () => tokenOffset,
-        getTokenLength: () => pos - tokenOffset,
-        getTokenStartLine: () => lineStartOffset,
-        getTokenStartCharacter: () => tokenOffset - prevTokenLineStartOffset,
-        getTokenError: () => scanError,
-    };
+    // trivia: newlines
+    if (isLineBreak(code)) {
+      pos++;
+      value += String.fromCharCode(code);
+      if (
+        code === 13 /* CharacterCodes.carriageReturn */ &&
+        text.charCodeAt(pos) === 10 /* CharacterCodes.lineFeed */
+      ) {
+        pos++;
+        value += "\n";
+      }
+      lineNumber++;
+      tokenLineStartOffset = pos;
+      return (token = 14) /* SyntaxKind.LineBreakTrivia */;
+    }
+    switch (code) {
+      // tokens: []{}:,
+      case 123 /* CharacterCodes.openBrace */:
+        pos++;
+        return (token = 1) /* SyntaxKind.OpenBraceToken */;
+      case 125 /* CharacterCodes.closeBrace */:
+        pos++;
+        return (token = 2) /* SyntaxKind.CloseBraceToken */;
+      case 91 /* CharacterCodes.openBracket */:
+        pos++;
+        return (token = 3) /* SyntaxKind.OpenBracketToken */;
+      case 93 /* CharacterCodes.closeBracket */:
+        pos++;
+        return (token = 4) /* SyntaxKind.CloseBracketToken */;
+      case 58 /* CharacterCodes.colon */:
+        pos++;
+        return (token = 6) /* SyntaxKind.ColonToken */;
+      case 44 /* CharacterCodes.comma */:
+        pos++;
+        return (token = 5) /* SyntaxKind.CommaToken */;
+      // strings
+      case 34 /* CharacterCodes.doubleQuote */:
+        pos++;
+        value = scanString();
+        return (token = 10) /* SyntaxKind.StringLiteral */;
+      // comments
+      case 47 /* CharacterCodes.slash */:
+        const start = pos - 1;
+        // Single-line comment
+        if (text.charCodeAt(pos + 1) === 47 /* CharacterCodes.slash */) {
+          pos += 2;
+          while (pos < len) {
+            if (isLineBreak(text.charCodeAt(pos))) {
+              break;
+            }
+            pos++;
+          }
+          value = text.substring(start, pos);
+          return (token = 12) /* SyntaxKind.LineCommentTrivia */;
+        }
+        // Multi-line comment
+        if (text.charCodeAt(pos + 1) === 42 /* CharacterCodes.asterisk */) {
+          pos += 2;
+          const safeLength = len - 1; // For lookahead.
+          let commentClosed = false;
+          while (pos < safeLength) {
+            const ch = text.charCodeAt(pos);
+            if (
+              ch === 42 /* CharacterCodes.asterisk */ &&
+              text.charCodeAt(pos + 1) === 47 /* CharacterCodes.slash */
+            ) {
+              pos += 2;
+              commentClosed = true;
+              break;
+            }
+            pos++;
+            if (isLineBreak(ch)) {
+              if (
+                ch === 13 /* CharacterCodes.carriageReturn */ &&
+                text.charCodeAt(pos) === 10 /* CharacterCodes.lineFeed */
+              ) {
+                pos++;
+              }
+              lineNumber++;
+              tokenLineStartOffset = pos;
+            }
+          }
+          if (!commentClosed) {
+            pos++;
+            scanError = 1 /* ScanError.UnexpectedEndOfComment */;
+          }
+          value = text.substring(start, pos);
+          return (token = 13) /* SyntaxKind.BlockCommentTrivia */;
+        }
+        // just a single slash
+        value += String.fromCharCode(code);
+        pos++;
+        return (token = 16) /* SyntaxKind.Unknown */;
+      // numbers
+      case 45 /* CharacterCodes.minus */:
+        value += String.fromCharCode(code);
+        pos++;
+        if (pos === len || !isDigit(text.charCodeAt(pos))) {
+          return (token = 16) /* SyntaxKind.Unknown */;
+        }
+      // found a minus, followed by a number so
+      // we fall through to proceed with scanning
+      // numbers
+      case 48 /* CharacterCodes._0 */:
+      case 49 /* CharacterCodes._1 */:
+      case 50 /* CharacterCodes._2 */:
+      case 51 /* CharacterCodes._3 */:
+      case 52 /* CharacterCodes._4 */:
+      case 53 /* CharacterCodes._5 */:
+      case 54 /* CharacterCodes._6 */:
+      case 55 /* CharacterCodes._7 */:
+      case 56 /* CharacterCodes._8 */:
+      case 57 /* CharacterCodes._9 */:
+        value += scanNumber();
+        return (token = 11) /* SyntaxKind.NumericLiteral */;
+      // literals and unknown symbols
+      default:
+        // is a literal? Read the full word.
+        while (pos < len && isUnknownContentCharacter(code)) {
+          pos++;
+          code = text.charCodeAt(pos);
+        }
+        if (tokenOffset !== pos) {
+          value = text.substring(tokenOffset, pos);
+          // keywords: true, false, null
+          switch (value) {
+            case "true":
+              return (token = 8) /* SyntaxKind.TrueKeyword */;
+            case "false":
+              return (token = 9) /* SyntaxKind.FalseKeyword */;
+            case "null":
+              return (token = 7) /* SyntaxKind.NullKeyword */;
+          }
+          return (token = 16) /* SyntaxKind.Unknown */;
+        }
+        // some
+        value += String.fromCharCode(code);
+        pos++;
+        return (token = 16) /* SyntaxKind.Unknown */;
+    }
+  }
+  function isUnknownContentCharacter(code) {
+    if (isWhiteSpace(code) || isLineBreak(code)) {
+      return false;
+    }
+    switch (code) {
+      case 125 /* CharacterCodes.closeBrace */:
+      case 93 /* CharacterCodes.closeBracket */:
+      case 123 /* CharacterCodes.openBrace */:
+      case 91 /* CharacterCodes.openBracket */:
+      case 34 /* CharacterCodes.doubleQuote */:
+      case 58 /* CharacterCodes.colon */:
+      case 44 /* CharacterCodes.comma */:
+      case 47 /* CharacterCodes.slash */:
+        return false;
+    }
+    return true;
+  }
+  function scanNextNonTrivia() {
+    let result;
+    do {
+      result = scanNext();
+    } while (
+      result >= 12 /* SyntaxKind.LineCommentTrivia */ &&
+      result <= 15 /* SyntaxKind.Trivia */
+    );
+    return result;
+  }
+  return {
+    setPosition: setPosition,
+    getPosition: () => pos,
+    scan: ignoreTrivia ? scanNextNonTrivia : scanNext,
+    getToken: () => token,
+    getTokenValue: () => value,
+    getTokenOffset: () => tokenOffset,
+    getTokenLength: () => pos - tokenOffset,
+    getTokenStartLine: () => lineStartOffset,
+    getTokenStartCharacter: () => tokenOffset - prevTokenLineStartOffset,
+    getTokenError: () => scanError,
+  };
 }
 function isWhiteSpace(ch) {
-    return ch === 32 /* CharacterCodes.space */ || ch === 9 /* CharacterCodes.tab */;
+  return (
+    ch === 32 /* CharacterCodes.space */ || ch === 9 /* CharacterCodes.tab */
+  );
 }
 function isLineBreak(ch) {
-    return ch === 10 /* CharacterCodes.lineFeed */ || ch === 13 /* CharacterCodes.carriageReturn */;
+  return (
+    ch === 10 /* CharacterCodes.lineFeed */ ||
+    ch === 13 /* CharacterCodes.carriageReturn */
+  );
 }
 function isDigit(ch) {
-    return ch >= 48 /* CharacterCodes._0 */ && ch <= 57 /* CharacterCodes._9 */;
+  return ch >= 48 /* CharacterCodes._0 */ && ch <= 57 /* CharacterCodes._9 */;
 }
 var CharacterCodes;
 (function (CharacterCodes) {
-    CharacterCodes[CharacterCodes["lineFeed"] = 10] = "lineFeed";
-    CharacterCodes[CharacterCodes["carriageReturn"] = 13] = "carriageReturn";
-    CharacterCodes[CharacterCodes["space"] = 32] = "space";
-    CharacterCodes[CharacterCodes["_0"] = 48] = "_0";
-    CharacterCodes[CharacterCodes["_1"] = 49] = "_1";
-    CharacterCodes[CharacterCodes["_2"] = 50] = "_2";
-    CharacterCodes[CharacterCodes["_3"] = 51] = "_3";
-    CharacterCodes[CharacterCodes["_4"] = 52] = "_4";
-    CharacterCodes[CharacterCodes["_5"] = 53] = "_5";
-    CharacterCodes[CharacterCodes["_6"] = 54] = "_6";
-    CharacterCodes[CharacterCodes["_7"] = 55] = "_7";
-    CharacterCodes[CharacterCodes["_8"] = 56] = "_8";
-    CharacterCodes[CharacterCodes["_9"] = 57] = "_9";
-    CharacterCodes[CharacterCodes["a"] = 97] = "a";
-    CharacterCodes[CharacterCodes["b"] = 98] = "b";
-    CharacterCodes[CharacterCodes["c"] = 99] = "c";
-    CharacterCodes[CharacterCodes["d"] = 100] = "d";
-    CharacterCodes[CharacterCodes["e"] = 101] = "e";
-    CharacterCodes[CharacterCodes["f"] = 102] = "f";
-    CharacterCodes[CharacterCodes["g"] = 103] = "g";
-    CharacterCodes[CharacterCodes["h"] = 104] = "h";
-    CharacterCodes[CharacterCodes["i"] = 105] = "i";
-    CharacterCodes[CharacterCodes["j"] = 106] = "j";
-    CharacterCodes[CharacterCodes["k"] = 107] = "k";
-    CharacterCodes[CharacterCodes["l"] = 108] = "l";
-    CharacterCodes[CharacterCodes["m"] = 109] = "m";
-    CharacterCodes[CharacterCodes["n"] = 110] = "n";
-    CharacterCodes[CharacterCodes["o"] = 111] = "o";
-    CharacterCodes[CharacterCodes["p"] = 112] = "p";
-    CharacterCodes[CharacterCodes["q"] = 113] = "q";
-    CharacterCodes[CharacterCodes["r"] = 114] = "r";
-    CharacterCodes[CharacterCodes["s"] = 115] = "s";
-    CharacterCodes[CharacterCodes["t"] = 116] = "t";
-    CharacterCodes[CharacterCodes["u"] = 117] = "u";
-    CharacterCodes[CharacterCodes["v"] = 118] = "v";
-    CharacterCodes[CharacterCodes["w"] = 119] = "w";
-    CharacterCodes[CharacterCodes["x"] = 120] = "x";
-    CharacterCodes[CharacterCodes["y"] = 121] = "y";
-    CharacterCodes[CharacterCodes["z"] = 122] = "z";
-    CharacterCodes[CharacterCodes["A"] = 65] = "A";
-    CharacterCodes[CharacterCodes["B"] = 66] = "B";
-    CharacterCodes[CharacterCodes["C"] = 67] = "C";
-    CharacterCodes[CharacterCodes["D"] = 68] = "D";
-    CharacterCodes[CharacterCodes["E"] = 69] = "E";
-    CharacterCodes[CharacterCodes["F"] = 70] = "F";
-    CharacterCodes[CharacterCodes["G"] = 71] = "G";
-    CharacterCodes[CharacterCodes["H"] = 72] = "H";
-    CharacterCodes[CharacterCodes["I"] = 73] = "I";
-    CharacterCodes[CharacterCodes["J"] = 74] = "J";
-    CharacterCodes[CharacterCodes["K"] = 75] = "K";
-    CharacterCodes[CharacterCodes["L"] = 76] = "L";
-    CharacterCodes[CharacterCodes["M"] = 77] = "M";
-    CharacterCodes[CharacterCodes["N"] = 78] = "N";
-    CharacterCodes[CharacterCodes["O"] = 79] = "O";
-    CharacterCodes[CharacterCodes["P"] = 80] = "P";
-    CharacterCodes[CharacterCodes["Q"] = 81] = "Q";
-    CharacterCodes[CharacterCodes["R"] = 82] = "R";
-    CharacterCodes[CharacterCodes["S"] = 83] = "S";
-    CharacterCodes[CharacterCodes["T"] = 84] = "T";
-    CharacterCodes[CharacterCodes["U"] = 85] = "U";
-    CharacterCodes[CharacterCodes["V"] = 86] = "V";
-    CharacterCodes[CharacterCodes["W"] = 87] = "W";
-    CharacterCodes[CharacterCodes["X"] = 88] = "X";
-    CharacterCodes[CharacterCodes["Y"] = 89] = "Y";
-    CharacterCodes[CharacterCodes["Z"] = 90] = "Z";
-    CharacterCodes[CharacterCodes["asterisk"] = 42] = "asterisk";
-    CharacterCodes[CharacterCodes["backslash"] = 92] = "backslash";
-    CharacterCodes[CharacterCodes["closeBrace"] = 125] = "closeBrace";
-    CharacterCodes[CharacterCodes["closeBracket"] = 93] = "closeBracket";
-    CharacterCodes[CharacterCodes["colon"] = 58] = "colon";
-    CharacterCodes[CharacterCodes["comma"] = 44] = "comma";
-    CharacterCodes[CharacterCodes["dot"] = 46] = "dot";
-    CharacterCodes[CharacterCodes["doubleQuote"] = 34] = "doubleQuote";
-    CharacterCodes[CharacterCodes["minus"] = 45] = "minus";
-    CharacterCodes[CharacterCodes["openBrace"] = 123] = "openBrace";
-    CharacterCodes[CharacterCodes["openBracket"] = 91] = "openBracket";
-    CharacterCodes[CharacterCodes["plus"] = 43] = "plus";
-    CharacterCodes[CharacterCodes["slash"] = 47] = "slash";
-    CharacterCodes[CharacterCodes["formFeed"] = 12] = "formFeed";
-    CharacterCodes[CharacterCodes["tab"] = 9] = "tab";
+  CharacterCodes[(CharacterCodes["lineFeed"] = 10)] = "lineFeed";
+  CharacterCodes[(CharacterCodes["carriageReturn"] = 13)] = "carriageReturn";
+  CharacterCodes[(CharacterCodes["space"] = 32)] = "space";
+  CharacterCodes[(CharacterCodes["_0"] = 48)] = "_0";
+  CharacterCodes[(CharacterCodes["_1"] = 49)] = "_1";
+  CharacterCodes[(CharacterCodes["_2"] = 50)] = "_2";
+  CharacterCodes[(CharacterCodes["_3"] = 51)] = "_3";
+  CharacterCodes[(CharacterCodes["_4"] = 52)] = "_4";
+  CharacterCodes[(CharacterCodes["_5"] = 53)] = "_5";
+  CharacterCodes[(CharacterCodes["_6"] = 54)] = "_6";
+  CharacterCodes[(CharacterCodes["_7"] = 55)] = "_7";
+  CharacterCodes[(CharacterCodes["_8"] = 56)] = "_8";
+  CharacterCodes[(CharacterCodes["_9"] = 57)] = "_9";
+  CharacterCodes[(CharacterCodes["a"] = 97)] = "a";
+  CharacterCodes[(CharacterCodes["b"] = 98)] = "b";
+  CharacterCodes[(CharacterCodes["c"] = 99)] = "c";
+  CharacterCodes[(CharacterCodes["d"] = 100)] = "d";
+  CharacterCodes[(CharacterCodes["e"] = 101)] = "e";
+  CharacterCodes[(CharacterCodes["f"] = 102)] = "f";
+  CharacterCodes[(CharacterCodes["g"] = 103)] = "g";
+  CharacterCodes[(CharacterCodes["h"] = 104)] = "h";
+  CharacterCodes[(CharacterCodes["i"] = 105)] = "i";
+  CharacterCodes[(CharacterCodes["j"] = 106)] = "j";
+  CharacterCodes[(CharacterCodes["k"] = 107)] = "k";
+  CharacterCodes[(CharacterCodes["l"] = 108)] = "l";
+  CharacterCodes[(CharacterCodes["m"] = 109)] = "m";
+  CharacterCodes[(CharacterCodes["n"] = 110)] = "n";
+  CharacterCodes[(CharacterCodes["o"] = 111)] = "o";
+  CharacterCodes[(CharacterCodes["p"] = 112)] = "p";
+  CharacterCodes[(CharacterCodes["q"] = 113)] = "q";
+  CharacterCodes[(CharacterCodes["r"] = 114)] = "r";
+  CharacterCodes[(CharacterCodes["s"] = 115)] = "s";
+  CharacterCodes[(CharacterCodes["t"] = 116)] = "t";
+  CharacterCodes[(CharacterCodes["u"] = 117)] = "u";
+  CharacterCodes[(CharacterCodes["v"] = 118)] = "v";
+  CharacterCodes[(CharacterCodes["w"] = 119)] = "w";
+  CharacterCodes[(CharacterCodes["x"] = 120)] = "x";
+  CharacterCodes[(CharacterCodes["y"] = 121)] = "y";
+  CharacterCodes[(CharacterCodes["z"] = 122)] = "z";
+  CharacterCodes[(CharacterCodes["A"] = 65)] = "A";
+  CharacterCodes[(CharacterCodes["B"] = 66)] = "B";
+  CharacterCodes[(CharacterCodes["C"] = 67)] = "C";
+  CharacterCodes[(CharacterCodes["D"] = 68)] = "D";
+  CharacterCodes[(CharacterCodes["E"] = 69)] = "E";
+  CharacterCodes[(CharacterCodes["F"] = 70)] = "F";
+  CharacterCodes[(CharacterCodes["G"] = 71)] = "G";
+  CharacterCodes[(CharacterCodes["H"] = 72)] = "H";
+  CharacterCodes[(CharacterCodes["I"] = 73)] = "I";
+  CharacterCodes[(CharacterCodes["J"] = 74)] = "J";
+  CharacterCodes[(CharacterCodes["K"] = 75)] = "K";
+  CharacterCodes[(CharacterCodes["L"] = 76)] = "L";
+  CharacterCodes[(CharacterCodes["M"] = 77)] = "M";
+  CharacterCodes[(CharacterCodes["N"] = 78)] = "N";
+  CharacterCodes[(CharacterCodes["O"] = 79)] = "O";
+  CharacterCodes[(CharacterCodes["P"] = 80)] = "P";
+  CharacterCodes[(CharacterCodes["Q"] = 81)] = "Q";
+  CharacterCodes[(CharacterCodes["R"] = 82)] = "R";
+  CharacterCodes[(CharacterCodes["S"] = 83)] = "S";
+  CharacterCodes[(CharacterCodes["T"] = 84)] = "T";
+  CharacterCodes[(CharacterCodes["U"] = 85)] = "U";
+  CharacterCodes[(CharacterCodes["V"] = 86)] = "V";
+  CharacterCodes[(CharacterCodes["W"] = 87)] = "W";
+  CharacterCodes[(CharacterCodes["X"] = 88)] = "X";
+  CharacterCodes[(CharacterCodes["Y"] = 89)] = "Y";
+  CharacterCodes[(CharacterCodes["Z"] = 90)] = "Z";
+  CharacterCodes[(CharacterCodes["asterisk"] = 42)] = "asterisk";
+  CharacterCodes[(CharacterCodes["backslash"] = 92)] = "backslash";
+  CharacterCodes[(CharacterCodes["closeBrace"] = 125)] = "closeBrace";
+  CharacterCodes[(CharacterCodes["closeBracket"] = 93)] = "closeBracket";
+  CharacterCodes[(CharacterCodes["colon"] = 58)] = "colon";
+  CharacterCodes[(CharacterCodes["comma"] = 44)] = "comma";
+  CharacterCodes[(CharacterCodes["dot"] = 46)] = "dot";
+  CharacterCodes[(CharacterCodes["doubleQuote"] = 34)] = "doubleQuote";
+  CharacterCodes[(CharacterCodes["minus"] = 45)] = "minus";
+  CharacterCodes[(CharacterCodes["openBrace"] = 123)] = "openBrace";
+  CharacterCodes[(CharacterCodes["openBracket"] = 91)] = "openBracket";
+  CharacterCodes[(CharacterCodes["plus"] = 43)] = "plus";
+  CharacterCodes[(CharacterCodes["slash"] = 47)] = "slash";
+  CharacterCodes[(CharacterCodes["formFeed"] = 12)] = "formFeed";
+  CharacterCodes[(CharacterCodes["tab"] = 9)] = "tab";
 })(CharacterCodes || (CharacterCodes = {}));
 
 /*---------------------------------------------------------------------------------------------
@@ -1455,304 +1662,378 @@ var CharacterCodes;
  *--------------------------------------------------------------------------------------------*/
 var ParseOptions;
 (function (ParseOptions) {
-    ParseOptions.DEFAULT = {
-        allowTrailingComma: false
-    };
+  ParseOptions.DEFAULT = {
+    allowTrailingComma: false,
+  };
 })(ParseOptions || (ParseOptions = {}));
 /**
  * Parses the given text and returns the object the JSON content represents. On invalid input, the parser tries to be as fault tolerant as possible, but still return a result.
  * Therefore always check the errors list to find out if the input was valid.
  */
 function parse$1(text, errors = [], options = ParseOptions.DEFAULT) {
-    let currentProperty = null;
-    let currentParent = [];
-    const previousParents = [];
-    function onValue(value) {
-        if (Array.isArray(currentParent)) {
-            currentParent.push(value);
-        }
-        else if (currentProperty !== null) {
-            currentParent[currentProperty] = value;
-        }
+  let currentProperty = null;
+  let currentParent = [];
+  const previousParents = [];
+  function onValue(value) {
+    if (Array.isArray(currentParent)) {
+      currentParent.push(value);
+    } else if (currentProperty !== null) {
+      currentParent[currentProperty] = value;
     }
-    const visitor = {
-        onObjectBegin: () => {
-            const object = {};
-            onValue(object);
-            previousParents.push(currentParent);
-            currentParent = object;
-            currentProperty = null;
-        },
-        onObjectProperty: (name) => {
-            currentProperty = name;
-        },
-        onObjectEnd: () => {
-            currentParent = previousParents.pop();
-        },
-        onArrayBegin: () => {
-            const array = [];
-            onValue(array);
-            previousParents.push(currentParent);
-            currentParent = array;
-            currentProperty = null;
-        },
-        onArrayEnd: () => {
-            currentParent = previousParents.pop();
-        },
-        onLiteralValue: onValue,
-        onError: (error, offset, length) => {
-            errors.push({ error, offset, length });
-        }
-    };
-    visit(text, visitor, options);
-    return currentParent[0];
+  }
+  const visitor = {
+    onObjectBegin: () => {
+      const object = {};
+      onValue(object);
+      previousParents.push(currentParent);
+      currentParent = object;
+      currentProperty = null;
+    },
+    onObjectProperty: (name) => {
+      currentProperty = name;
+    },
+    onObjectEnd: () => {
+      currentParent = previousParents.pop();
+    },
+    onArrayBegin: () => {
+      const array = [];
+      onValue(array);
+      previousParents.push(currentParent);
+      currentParent = array;
+      currentProperty = null;
+    },
+    onArrayEnd: () => {
+      currentParent = previousParents.pop();
+    },
+    onLiteralValue: onValue,
+    onError: (error, offset, length) => {
+      errors.push({ error, offset, length });
+    },
+  };
+  visit(text, visitor, options);
+  return currentParent[0];
 }
 /**
  * Parses the given text and invokes the visitor functions for each object, array and literal reached.
  */
 function visit(text, visitor, options = ParseOptions.DEFAULT) {
-    const _scanner = createScanner(text, false);
-    // Important: Only pass copies of this to visitor functions to prevent accidental modification, and
-    // to not affect visitor functions which stored a reference to a previous JSONPath
-    const _jsonPath = [];
-    function toNoArgVisit(visitFunction) {
-        return visitFunction ? () => visitFunction(_scanner.getTokenOffset(), _scanner.getTokenLength(), _scanner.getTokenStartLine(), _scanner.getTokenStartCharacter()) : () => true;
+  const _scanner = createScanner(text, false);
+  // Important: Only pass copies of this to visitor functions to prevent accidental modification, and
+  // to not affect visitor functions which stored a reference to a previous JSONPath
+  const _jsonPath = [];
+  function toNoArgVisit(visitFunction) {
+    return visitFunction
+      ? () =>
+          visitFunction(
+            _scanner.getTokenOffset(),
+            _scanner.getTokenLength(),
+            _scanner.getTokenStartLine(),
+            _scanner.getTokenStartCharacter()
+          )
+      : () => true;
+  }
+  function toNoArgVisitWithPath(visitFunction) {
+    return visitFunction
+      ? () =>
+          visitFunction(
+            _scanner.getTokenOffset(),
+            _scanner.getTokenLength(),
+            _scanner.getTokenStartLine(),
+            _scanner.getTokenStartCharacter(),
+            () => _jsonPath.slice()
+          )
+      : () => true;
+  }
+  function toOneArgVisit(visitFunction) {
+    return visitFunction
+      ? (arg) =>
+          visitFunction(
+            arg,
+            _scanner.getTokenOffset(),
+            _scanner.getTokenLength(),
+            _scanner.getTokenStartLine(),
+            _scanner.getTokenStartCharacter()
+          )
+      : () => true;
+  }
+  function toOneArgVisitWithPath(visitFunction) {
+    return visitFunction
+      ? (arg) =>
+          visitFunction(
+            arg,
+            _scanner.getTokenOffset(),
+            _scanner.getTokenLength(),
+            _scanner.getTokenStartLine(),
+            _scanner.getTokenStartCharacter(),
+            () => _jsonPath.slice()
+          )
+      : () => true;
+  }
+  const onObjectBegin = toNoArgVisitWithPath(visitor.onObjectBegin),
+    onObjectProperty = toOneArgVisitWithPath(visitor.onObjectProperty),
+    onObjectEnd = toNoArgVisit(visitor.onObjectEnd),
+    onArrayBegin = toNoArgVisitWithPath(visitor.onArrayBegin),
+    onArrayEnd = toNoArgVisit(visitor.onArrayEnd),
+    onLiteralValue = toOneArgVisitWithPath(visitor.onLiteralValue),
+    onSeparator = toOneArgVisit(visitor.onSeparator),
+    onComment = toNoArgVisit(visitor.onComment),
+    onError = toOneArgVisit(visitor.onError);
+  const disallowComments = options && options.disallowComments;
+  const allowTrailingComma = options && options.allowTrailingComma;
+  function scanNext() {
+    while (true) {
+      const token = _scanner.scan();
+      switch (_scanner.getTokenError()) {
+        case 4 /* ScanError.InvalidUnicode */:
+          handleError(14 /* ParseErrorCode.InvalidUnicode */);
+          break;
+        case 5 /* ScanError.InvalidEscapeCharacter */:
+          handleError(15 /* ParseErrorCode.InvalidEscapeCharacter */);
+          break;
+        case 3 /* ScanError.UnexpectedEndOfNumber */:
+          handleError(13 /* ParseErrorCode.UnexpectedEndOfNumber */);
+          break;
+        case 1 /* ScanError.UnexpectedEndOfComment */:
+          if (!disallowComments) {
+            handleError(11 /* ParseErrorCode.UnexpectedEndOfComment */);
+          }
+          break;
+        case 2 /* ScanError.UnexpectedEndOfString */:
+          handleError(12 /* ParseErrorCode.UnexpectedEndOfString */);
+          break;
+        case 6 /* ScanError.InvalidCharacter */:
+          handleError(16 /* ParseErrorCode.InvalidCharacter */);
+          break;
+      }
+      switch (token) {
+        case 12 /* SyntaxKind.LineCommentTrivia */:
+        case 13 /* SyntaxKind.BlockCommentTrivia */:
+          if (disallowComments) {
+            handleError(10 /* ParseErrorCode.InvalidCommentToken */);
+          } else {
+            onComment();
+          }
+          break;
+        case 16 /* SyntaxKind.Unknown */:
+          handleError(1 /* ParseErrorCode.InvalidSymbol */);
+          break;
+        case 15 /* SyntaxKind.Trivia */:
+        case 14 /* SyntaxKind.LineBreakTrivia */:
+          break;
+        default:
+          return token;
+      }
     }
-    function toNoArgVisitWithPath(visitFunction) {
-        return visitFunction ? () => visitFunction(_scanner.getTokenOffset(), _scanner.getTokenLength(), _scanner.getTokenStartLine(), _scanner.getTokenStartCharacter(), () => _jsonPath.slice()) : () => true;
+  }
+  function handleError(error, skipUntilAfter = [], skipUntil = []) {
+    onError(error);
+    if (skipUntilAfter.length + skipUntil.length > 0) {
+      let token = _scanner.getToken();
+      while (token !== 17 /* SyntaxKind.EOF */) {
+        if (skipUntilAfter.indexOf(token) !== -1) {
+          scanNext();
+          break;
+        } else if (skipUntil.indexOf(token) !== -1) {
+          break;
+        }
+        token = scanNext();
+      }
     }
-    function toOneArgVisit(visitFunction) {
-        return visitFunction ? (arg) => visitFunction(arg, _scanner.getTokenOffset(), _scanner.getTokenLength(), _scanner.getTokenStartLine(), _scanner.getTokenStartCharacter()) : () => true;
-    }
-    function toOneArgVisitWithPath(visitFunction) {
-        return visitFunction ? (arg) => visitFunction(arg, _scanner.getTokenOffset(), _scanner.getTokenLength(), _scanner.getTokenStartLine(), _scanner.getTokenStartCharacter(), () => _jsonPath.slice()) : () => true;
-    }
-    const onObjectBegin = toNoArgVisitWithPath(visitor.onObjectBegin), onObjectProperty = toOneArgVisitWithPath(visitor.onObjectProperty), onObjectEnd = toNoArgVisit(visitor.onObjectEnd), onArrayBegin = toNoArgVisitWithPath(visitor.onArrayBegin), onArrayEnd = toNoArgVisit(visitor.onArrayEnd), onLiteralValue = toOneArgVisitWithPath(visitor.onLiteralValue), onSeparator = toOneArgVisit(visitor.onSeparator), onComment = toNoArgVisit(visitor.onComment), onError = toOneArgVisit(visitor.onError);
-    const disallowComments = options && options.disallowComments;
-    const allowTrailingComma = options && options.allowTrailingComma;
-    function scanNext() {
-        while (true) {
-            const token = _scanner.scan();
-            switch (_scanner.getTokenError()) {
-                case 4 /* ScanError.InvalidUnicode */:
-                    handleError(14 /* ParseErrorCode.InvalidUnicode */);
-                    break;
-                case 5 /* ScanError.InvalidEscapeCharacter */:
-                    handleError(15 /* ParseErrorCode.InvalidEscapeCharacter */);
-                    break;
-                case 3 /* ScanError.UnexpectedEndOfNumber */:
-                    handleError(13 /* ParseErrorCode.UnexpectedEndOfNumber */);
-                    break;
-                case 1 /* ScanError.UnexpectedEndOfComment */:
-                    if (!disallowComments) {
-                        handleError(11 /* ParseErrorCode.UnexpectedEndOfComment */);
-                    }
-                    break;
-                case 2 /* ScanError.UnexpectedEndOfString */:
-                    handleError(12 /* ParseErrorCode.UnexpectedEndOfString */);
-                    break;
-                case 6 /* ScanError.InvalidCharacter */:
-                    handleError(16 /* ParseErrorCode.InvalidCharacter */);
-                    break;
-            }
-            switch (token) {
-                case 12 /* SyntaxKind.LineCommentTrivia */:
-                case 13 /* SyntaxKind.BlockCommentTrivia */:
-                    if (disallowComments) {
-                        handleError(10 /* ParseErrorCode.InvalidCommentToken */);
-                    }
-                    else {
-                        onComment();
-                    }
-                    break;
-                case 16 /* SyntaxKind.Unknown */:
-                    handleError(1 /* ParseErrorCode.InvalidSymbol */);
-                    break;
-                case 15 /* SyntaxKind.Trivia */:
-                case 14 /* SyntaxKind.LineBreakTrivia */:
-                    break;
-                default:
-                    return token;
-            }
-        }
-    }
-    function handleError(error, skipUntilAfter = [], skipUntil = []) {
-        onError(error);
-        if (skipUntilAfter.length + skipUntil.length > 0) {
-            let token = _scanner.getToken();
-            while (token !== 17 /* SyntaxKind.EOF */) {
-                if (skipUntilAfter.indexOf(token) !== -1) {
-                    scanNext();
-                    break;
-                }
-                else if (skipUntil.indexOf(token) !== -1) {
-                    break;
-                }
-                token = scanNext();
-            }
-        }
-    }
-    function parseString(isValue) {
-        const value = _scanner.getTokenValue();
-        if (isValue) {
-            onLiteralValue(value);
-        }
-        else {
-            onObjectProperty(value);
-            // add property name afterwards
-            _jsonPath.push(value);
-        }
-        scanNext();
-        return true;
-    }
-    function parseLiteral() {
-        switch (_scanner.getToken()) {
-            case 11 /* SyntaxKind.NumericLiteral */:
-                const tokenValue = _scanner.getTokenValue();
-                let value = Number(tokenValue);
-                if (isNaN(value)) {
-                    handleError(2 /* ParseErrorCode.InvalidNumberFormat */);
-                    value = 0;
-                }
-                onLiteralValue(value);
-                break;
-            case 7 /* SyntaxKind.NullKeyword */:
-                onLiteralValue(null);
-                break;
-            case 8 /* SyntaxKind.TrueKeyword */:
-                onLiteralValue(true);
-                break;
-            case 9 /* SyntaxKind.FalseKeyword */:
-                onLiteralValue(false);
-                break;
-            default:
-                return false;
-        }
-        scanNext();
-        return true;
-    }
-    function parseProperty() {
-        if (_scanner.getToken() !== 10 /* SyntaxKind.StringLiteral */) {
-            handleError(3 /* ParseErrorCode.PropertyNameExpected */, [], [2 /* SyntaxKind.CloseBraceToken */, 5 /* SyntaxKind.CommaToken */]);
-            return false;
-        }
-        parseString(false);
-        if (_scanner.getToken() === 6 /* SyntaxKind.ColonToken */) {
-            onSeparator(':');
-            scanNext(); // consume colon
-            if (!parseValue()) {
-                handleError(4 /* ParseErrorCode.ValueExpected */, [], [2 /* SyntaxKind.CloseBraceToken */, 5 /* SyntaxKind.CommaToken */]);
-            }
-        }
-        else {
-            handleError(5 /* ParseErrorCode.ColonExpected */, [], [2 /* SyntaxKind.CloseBraceToken */, 5 /* SyntaxKind.CommaToken */]);
-        }
-        _jsonPath.pop(); // remove processed property name
-        return true;
-    }
-    function parseObject() {
-        onObjectBegin();
-        scanNext(); // consume open brace
-        let needsComma = false;
-        while (_scanner.getToken() !== 2 /* SyntaxKind.CloseBraceToken */ && _scanner.getToken() !== 17 /* SyntaxKind.EOF */) {
-            if (_scanner.getToken() === 5 /* SyntaxKind.CommaToken */) {
-                if (!needsComma) {
-                    handleError(4 /* ParseErrorCode.ValueExpected */, [], []);
-                }
-                onSeparator(',');
-                scanNext(); // consume comma
-                if (_scanner.getToken() === 2 /* SyntaxKind.CloseBraceToken */ && allowTrailingComma) {
-                    break;
-                }
-            }
-            else if (needsComma) {
-                handleError(6 /* ParseErrorCode.CommaExpected */, [], []);
-            }
-            if (!parseProperty()) {
-                handleError(4 /* ParseErrorCode.ValueExpected */, [], [2 /* SyntaxKind.CloseBraceToken */, 5 /* SyntaxKind.CommaToken */]);
-            }
-            needsComma = true;
-        }
-        onObjectEnd();
-        if (_scanner.getToken() !== 2 /* SyntaxKind.CloseBraceToken */) {
-            handleError(7 /* ParseErrorCode.CloseBraceExpected */, [2 /* SyntaxKind.CloseBraceToken */], []);
-        }
-        else {
-            scanNext(); // consume close brace
-        }
-        return true;
-    }
-    function parseArray() {
-        onArrayBegin();
-        scanNext(); // consume open bracket
-        let isFirstElement = true;
-        let needsComma = false;
-        while (_scanner.getToken() !== 4 /* SyntaxKind.CloseBracketToken */ && _scanner.getToken() !== 17 /* SyntaxKind.EOF */) {
-            if (_scanner.getToken() === 5 /* SyntaxKind.CommaToken */) {
-                if (!needsComma) {
-                    handleError(4 /* ParseErrorCode.ValueExpected */, [], []);
-                }
-                onSeparator(',');
-                scanNext(); // consume comma
-                if (_scanner.getToken() === 4 /* SyntaxKind.CloseBracketToken */ && allowTrailingComma) {
-                    break;
-                }
-            }
-            else if (needsComma) {
-                handleError(6 /* ParseErrorCode.CommaExpected */, [], []);
-            }
-            if (isFirstElement) {
-                _jsonPath.push(0);
-                isFirstElement = false;
-            }
-            else {
-                _jsonPath[_jsonPath.length - 1]++;
-            }
-            if (!parseValue()) {
-                handleError(4 /* ParseErrorCode.ValueExpected */, [], [4 /* SyntaxKind.CloseBracketToken */, 5 /* SyntaxKind.CommaToken */]);
-            }
-            needsComma = true;
-        }
-        onArrayEnd();
-        if (!isFirstElement) {
-            _jsonPath.pop(); // remove array index
-        }
-        if (_scanner.getToken() !== 4 /* SyntaxKind.CloseBracketToken */) {
-            handleError(8 /* ParseErrorCode.CloseBracketExpected */, [4 /* SyntaxKind.CloseBracketToken */], []);
-        }
-        else {
-            scanNext(); // consume close bracket
-        }
-        return true;
-    }
-    function parseValue() {
-        switch (_scanner.getToken()) {
-            case 3 /* SyntaxKind.OpenBracketToken */:
-                return parseArray();
-            case 1 /* SyntaxKind.OpenBraceToken */:
-                return parseObject();
-            case 10 /* SyntaxKind.StringLiteral */:
-                return parseString(true);
-            default:
-                return parseLiteral();
-        }
+  }
+  function parseString(isValue) {
+    const value = _scanner.getTokenValue();
+    if (isValue) {
+      onLiteralValue(value);
+    } else {
+      onObjectProperty(value);
+      // add property name afterwards
+      _jsonPath.push(value);
     }
     scanNext();
-    if (_scanner.getToken() === 17 /* SyntaxKind.EOF */) {
-        if (options.allowEmptyContent) {
-            return true;
+    return true;
+  }
+  function parseLiteral() {
+    switch (_scanner.getToken()) {
+      case 11 /* SyntaxKind.NumericLiteral */:
+        const tokenValue = _scanner.getTokenValue();
+        let value = Number(tokenValue);
+        if (isNaN(value)) {
+          handleError(2 /* ParseErrorCode.InvalidNumberFormat */);
+          value = 0;
         }
-        handleError(4 /* ParseErrorCode.ValueExpected */, [], []);
+        onLiteralValue(value);
+        break;
+      case 7 /* SyntaxKind.NullKeyword */:
+        onLiteralValue(null);
+        break;
+      case 8 /* SyntaxKind.TrueKeyword */:
+        onLiteralValue(true);
+        break;
+      case 9 /* SyntaxKind.FalseKeyword */:
+        onLiteralValue(false);
+        break;
+      default:
         return false;
     }
-    if (!parseValue()) {
-        handleError(4 /* ParseErrorCode.ValueExpected */, [], []);
-        return false;
+    scanNext();
+    return true;
+  }
+  function parseProperty() {
+    if (_scanner.getToken() !== 10 /* SyntaxKind.StringLiteral */) {
+      handleError(
+        3 /* ParseErrorCode.PropertyNameExpected */,
+        [],
+        [2 /* SyntaxKind.CloseBraceToken */, 5 /* SyntaxKind.CommaToken */]
+      );
+      return false;
     }
-    if (_scanner.getToken() !== 17 /* SyntaxKind.EOF */) {
-        handleError(9 /* ParseErrorCode.EndOfFileExpected */, [], []);
+    parseString(false);
+    if (_scanner.getToken() === 6 /* SyntaxKind.ColonToken */) {
+      onSeparator(":");
+      scanNext(); // consume colon
+      if (!parseValue()) {
+        handleError(
+          4 /* ParseErrorCode.ValueExpected */,
+          [],
+          [2 /* SyntaxKind.CloseBraceToken */, 5 /* SyntaxKind.CommaToken */]
+        );
+      }
+    } else {
+      handleError(
+        5 /* ParseErrorCode.ColonExpected */,
+        [],
+        [2 /* SyntaxKind.CloseBraceToken */, 5 /* SyntaxKind.CommaToken */]
+      );
+    }
+    _jsonPath.pop(); // remove processed property name
+    return true;
+  }
+  function parseObject() {
+    onObjectBegin();
+    scanNext(); // consume open brace
+    let needsComma = false;
+    while (
+      _scanner.getToken() !== 2 /* SyntaxKind.CloseBraceToken */ &&
+      _scanner.getToken() !== 17 /* SyntaxKind.EOF */
+    ) {
+      if (_scanner.getToken() === 5 /* SyntaxKind.CommaToken */) {
+        if (!needsComma) {
+          handleError(4 /* ParseErrorCode.ValueExpected */, [], []);
+        }
+        onSeparator(",");
+        scanNext(); // consume comma
+        if (
+          _scanner.getToken() === 2 /* SyntaxKind.CloseBraceToken */ &&
+          allowTrailingComma
+        ) {
+          break;
+        }
+      } else if (needsComma) {
+        handleError(6 /* ParseErrorCode.CommaExpected */, [], []);
+      }
+      if (!parseProperty()) {
+        handleError(
+          4 /* ParseErrorCode.ValueExpected */,
+          [],
+          [2 /* SyntaxKind.CloseBraceToken */, 5 /* SyntaxKind.CommaToken */]
+        );
+      }
+      needsComma = true;
+    }
+    onObjectEnd();
+    if (_scanner.getToken() !== 2 /* SyntaxKind.CloseBraceToken */) {
+      handleError(
+        7 /* ParseErrorCode.CloseBraceExpected */,
+        [2 /* SyntaxKind.CloseBraceToken */],
+        []
+      );
+    } else {
+      scanNext(); // consume close brace
     }
     return true;
+  }
+  function parseArray() {
+    onArrayBegin();
+    scanNext(); // consume open bracket
+    let isFirstElement = true;
+    let needsComma = false;
+    while (
+      _scanner.getToken() !== 4 /* SyntaxKind.CloseBracketToken */ &&
+      _scanner.getToken() !== 17 /* SyntaxKind.EOF */
+    ) {
+      if (_scanner.getToken() === 5 /* SyntaxKind.CommaToken */) {
+        if (!needsComma) {
+          handleError(4 /* ParseErrorCode.ValueExpected */, [], []);
+        }
+        onSeparator(",");
+        scanNext(); // consume comma
+        if (
+          _scanner.getToken() === 4 /* SyntaxKind.CloseBracketToken */ &&
+          allowTrailingComma
+        ) {
+          break;
+        }
+      } else if (needsComma) {
+        handleError(6 /* ParseErrorCode.CommaExpected */, [], []);
+      }
+      if (isFirstElement) {
+        _jsonPath.push(0);
+        isFirstElement = false;
+      } else {
+        _jsonPath[_jsonPath.length - 1]++;
+      }
+      if (!parseValue()) {
+        handleError(
+          4 /* ParseErrorCode.ValueExpected */,
+          [],
+          [4 /* SyntaxKind.CloseBracketToken */, 5 /* SyntaxKind.CommaToken */]
+        );
+      }
+      needsComma = true;
+    }
+    onArrayEnd();
+    if (!isFirstElement) {
+      _jsonPath.pop(); // remove array index
+    }
+    if (_scanner.getToken() !== 4 /* SyntaxKind.CloseBracketToken */) {
+      handleError(
+        8 /* ParseErrorCode.CloseBracketExpected */,
+        [4 /* SyntaxKind.CloseBracketToken */],
+        []
+      );
+    } else {
+      scanNext(); // consume close bracket
+    }
+    return true;
+  }
+  function parseValue() {
+    switch (_scanner.getToken()) {
+      case 3 /* SyntaxKind.OpenBracketToken */:
+        return parseArray();
+      case 1 /* SyntaxKind.OpenBraceToken */:
+        return parseObject();
+      case 10 /* SyntaxKind.StringLiteral */:
+        return parseString(true);
+      default:
+        return parseLiteral();
+    }
+  }
+  scanNext();
+  if (_scanner.getToken() === 17 /* SyntaxKind.EOF */) {
+    if (options.allowEmptyContent) {
+      return true;
+    }
+    handleError(4 /* ParseErrorCode.ValueExpected */, [], []);
+    return false;
+  }
+  if (!parseValue()) {
+    handleError(4 /* ParseErrorCode.ValueExpected */, [], []);
+    return false;
+  }
+  if (_scanner.getToken() !== 17 /* SyntaxKind.EOF */) {
+    handleError(9 /* ParseErrorCode.EndOfFileExpected */, [], []);
+  }
+  return true;
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -1761,33 +2042,35 @@ function visit(text, visitor, options = ParseOptions.DEFAULT) {
  *--------------------------------------------------------------------------------------------*/
 var ScanError;
 (function (ScanError) {
-    ScanError[ScanError["None"] = 0] = "None";
-    ScanError[ScanError["UnexpectedEndOfComment"] = 1] = "UnexpectedEndOfComment";
-    ScanError[ScanError["UnexpectedEndOfString"] = 2] = "UnexpectedEndOfString";
-    ScanError[ScanError["UnexpectedEndOfNumber"] = 3] = "UnexpectedEndOfNumber";
-    ScanError[ScanError["InvalidUnicode"] = 4] = "InvalidUnicode";
-    ScanError[ScanError["InvalidEscapeCharacter"] = 5] = "InvalidEscapeCharacter";
-    ScanError[ScanError["InvalidCharacter"] = 6] = "InvalidCharacter";
+  ScanError[(ScanError["None"] = 0)] = "None";
+  ScanError[(ScanError["UnexpectedEndOfComment"] = 1)] =
+    "UnexpectedEndOfComment";
+  ScanError[(ScanError["UnexpectedEndOfString"] = 2)] = "UnexpectedEndOfString";
+  ScanError[(ScanError["UnexpectedEndOfNumber"] = 3)] = "UnexpectedEndOfNumber";
+  ScanError[(ScanError["InvalidUnicode"] = 4)] = "InvalidUnicode";
+  ScanError[(ScanError["InvalidEscapeCharacter"] = 5)] =
+    "InvalidEscapeCharacter";
+  ScanError[(ScanError["InvalidCharacter"] = 6)] = "InvalidCharacter";
 })(ScanError || (ScanError = {}));
 var SyntaxKind;
 (function (SyntaxKind) {
-    SyntaxKind[SyntaxKind["OpenBraceToken"] = 1] = "OpenBraceToken";
-    SyntaxKind[SyntaxKind["CloseBraceToken"] = 2] = "CloseBraceToken";
-    SyntaxKind[SyntaxKind["OpenBracketToken"] = 3] = "OpenBracketToken";
-    SyntaxKind[SyntaxKind["CloseBracketToken"] = 4] = "CloseBracketToken";
-    SyntaxKind[SyntaxKind["CommaToken"] = 5] = "CommaToken";
-    SyntaxKind[SyntaxKind["ColonToken"] = 6] = "ColonToken";
-    SyntaxKind[SyntaxKind["NullKeyword"] = 7] = "NullKeyword";
-    SyntaxKind[SyntaxKind["TrueKeyword"] = 8] = "TrueKeyword";
-    SyntaxKind[SyntaxKind["FalseKeyword"] = 9] = "FalseKeyword";
-    SyntaxKind[SyntaxKind["StringLiteral"] = 10] = "StringLiteral";
-    SyntaxKind[SyntaxKind["NumericLiteral"] = 11] = "NumericLiteral";
-    SyntaxKind[SyntaxKind["LineCommentTrivia"] = 12] = "LineCommentTrivia";
-    SyntaxKind[SyntaxKind["BlockCommentTrivia"] = 13] = "BlockCommentTrivia";
-    SyntaxKind[SyntaxKind["LineBreakTrivia"] = 14] = "LineBreakTrivia";
-    SyntaxKind[SyntaxKind["Trivia"] = 15] = "Trivia";
-    SyntaxKind[SyntaxKind["Unknown"] = 16] = "Unknown";
-    SyntaxKind[SyntaxKind["EOF"] = 17] = "EOF";
+  SyntaxKind[(SyntaxKind["OpenBraceToken"] = 1)] = "OpenBraceToken";
+  SyntaxKind[(SyntaxKind["CloseBraceToken"] = 2)] = "CloseBraceToken";
+  SyntaxKind[(SyntaxKind["OpenBracketToken"] = 3)] = "OpenBracketToken";
+  SyntaxKind[(SyntaxKind["CloseBracketToken"] = 4)] = "CloseBracketToken";
+  SyntaxKind[(SyntaxKind["CommaToken"] = 5)] = "CommaToken";
+  SyntaxKind[(SyntaxKind["ColonToken"] = 6)] = "ColonToken";
+  SyntaxKind[(SyntaxKind["NullKeyword"] = 7)] = "NullKeyword";
+  SyntaxKind[(SyntaxKind["TrueKeyword"] = 8)] = "TrueKeyword";
+  SyntaxKind[(SyntaxKind["FalseKeyword"] = 9)] = "FalseKeyword";
+  SyntaxKind[(SyntaxKind["StringLiteral"] = 10)] = "StringLiteral";
+  SyntaxKind[(SyntaxKind["NumericLiteral"] = 11)] = "NumericLiteral";
+  SyntaxKind[(SyntaxKind["LineCommentTrivia"] = 12)] = "LineCommentTrivia";
+  SyntaxKind[(SyntaxKind["BlockCommentTrivia"] = 13)] = "BlockCommentTrivia";
+  SyntaxKind[(SyntaxKind["LineBreakTrivia"] = 14)] = "LineBreakTrivia";
+  SyntaxKind[(SyntaxKind["Trivia"] = 15)] = "Trivia";
+  SyntaxKind[(SyntaxKind["Unknown"] = 16)] = "Unknown";
+  SyntaxKind[(SyntaxKind["EOF"] = 17)] = "EOF";
 })(SyntaxKind || (SyntaxKind = {}));
 /**
  * Parses the given text and returns the object the JSON content represents. On invalid input, the parser tries to be as fault tolerant as possible, but still return a result.
@@ -1796,26 +2079,42 @@ var SyntaxKind;
 const parse = parse$1;
 var ParseErrorCode;
 (function (ParseErrorCode) {
-    ParseErrorCode[ParseErrorCode["InvalidSymbol"] = 1] = "InvalidSymbol";
-    ParseErrorCode[ParseErrorCode["InvalidNumberFormat"] = 2] = "InvalidNumberFormat";
-    ParseErrorCode[ParseErrorCode["PropertyNameExpected"] = 3] = "PropertyNameExpected";
-    ParseErrorCode[ParseErrorCode["ValueExpected"] = 4] = "ValueExpected";
-    ParseErrorCode[ParseErrorCode["ColonExpected"] = 5] = "ColonExpected";
-    ParseErrorCode[ParseErrorCode["CommaExpected"] = 6] = "CommaExpected";
-    ParseErrorCode[ParseErrorCode["CloseBraceExpected"] = 7] = "CloseBraceExpected";
-    ParseErrorCode[ParseErrorCode["CloseBracketExpected"] = 8] = "CloseBracketExpected";
-    ParseErrorCode[ParseErrorCode["EndOfFileExpected"] = 9] = "EndOfFileExpected";
-    ParseErrorCode[ParseErrorCode["InvalidCommentToken"] = 10] = "InvalidCommentToken";
-    ParseErrorCode[ParseErrorCode["UnexpectedEndOfComment"] = 11] = "UnexpectedEndOfComment";
-    ParseErrorCode[ParseErrorCode["UnexpectedEndOfString"] = 12] = "UnexpectedEndOfString";
-    ParseErrorCode[ParseErrorCode["UnexpectedEndOfNumber"] = 13] = "UnexpectedEndOfNumber";
-    ParseErrorCode[ParseErrorCode["InvalidUnicode"] = 14] = "InvalidUnicode";
-    ParseErrorCode[ParseErrorCode["InvalidEscapeCharacter"] = 15] = "InvalidEscapeCharacter";
-    ParseErrorCode[ParseErrorCode["InvalidCharacter"] = 16] = "InvalidCharacter";
+  ParseErrorCode[(ParseErrorCode["InvalidSymbol"] = 1)] = "InvalidSymbol";
+  ParseErrorCode[(ParseErrorCode["InvalidNumberFormat"] = 2)] =
+    "InvalidNumberFormat";
+  ParseErrorCode[(ParseErrorCode["PropertyNameExpected"] = 3)] =
+    "PropertyNameExpected";
+  ParseErrorCode[(ParseErrorCode["ValueExpected"] = 4)] = "ValueExpected";
+  ParseErrorCode[(ParseErrorCode["ColonExpected"] = 5)] = "ColonExpected";
+  ParseErrorCode[(ParseErrorCode["CommaExpected"] = 6)] = "CommaExpected";
+  ParseErrorCode[(ParseErrorCode["CloseBraceExpected"] = 7)] =
+    "CloseBraceExpected";
+  ParseErrorCode[(ParseErrorCode["CloseBracketExpected"] = 8)] =
+    "CloseBracketExpected";
+  ParseErrorCode[(ParseErrorCode["EndOfFileExpected"] = 9)] =
+    "EndOfFileExpected";
+  ParseErrorCode[(ParseErrorCode["InvalidCommentToken"] = 10)] =
+    "InvalidCommentToken";
+  ParseErrorCode[(ParseErrorCode["UnexpectedEndOfComment"] = 11)] =
+    "UnexpectedEndOfComment";
+  ParseErrorCode[(ParseErrorCode["UnexpectedEndOfString"] = 12)] =
+    "UnexpectedEndOfString";
+  ParseErrorCode[(ParseErrorCode["UnexpectedEndOfNumber"] = 13)] =
+    "UnexpectedEndOfNumber";
+  ParseErrorCode[(ParseErrorCode["InvalidUnicode"] = 14)] = "InvalidUnicode";
+  ParseErrorCode[(ParseErrorCode["InvalidEscapeCharacter"] = 15)] =
+    "InvalidEscapeCharacter";
+  ParseErrorCode[(ParseErrorCode["InvalidCharacter"] = 16)] =
+    "InvalidCharacter";
 })(ParseErrorCode || (ParseErrorCode = {}));
 
-const isWebWorker = typeof self !== "undefined" && typeof self.WorkerGlobalScope !== "undefined";
-const isNode = "process" in globalThis && typeof process !== "undefined" && typeof process.release !== "undefined" && process.release.name === "node";
+const isWebWorker =
+  typeof self !== "undefined" && typeof self.WorkerGlobalScope !== "undefined";
+const isNode =
+  "process" in globalThis &&
+  typeof process !== "undefined" &&
+  typeof process.release !== "undefined" &&
+  process.release.name === "node";
 const isBrowser = isWebWorker || !isNode;
 let CDN_ROOT = "";
 let WASM = "";
@@ -1833,17 +2132,20 @@ async function getOniguruma(wasmPath) {
     if (isBrowser) {
       if (typeof WASM === "string") {
         loader = loadWASM({
-          data: await fetch(_resolvePath(join(...dirpathparts(wasmPath), "onig.wasm")))
+          data: await fetch(
+            _resolvePath(join(...dirpathparts(wasmPath), "onig.wasm"))
+          ),
         });
       } else {
         loader = loadWASM({
-          data: WASM
+          data: WASM,
         });
       }
     } else {
-      const path = require("path");
-      const wasmPath2 = path.join(require.resolve("vscode-oniguruma"), "../onig.wasm");
-      const fs = require("fs");
+      const wasmPath2 = pathjoin(
+        require.resolve("vscode-oniguruma"),
+        "../onig.wasm"
+      );
       const wasmBin = fs.readFileSync(wasmPath2).buffer;
       loader = loadWASM(wasmBin);
     }
@@ -1854,7 +2156,7 @@ async function getOniguruma(wasmPath) {
         },
         createOnigString(s) {
           return createOnigString(s);
-        }
+        },
       };
     });
   }
@@ -1864,11 +2166,10 @@ function _resolvePath(filepath) {
   if (isBrowser) {
     return `${CDN_ROOT}${filepath}`;
   } else {
-    const path = require("path");
-    if (path.isAbsolute(filepath)) {
+    if (isAbsolute(filepath)) {
       return filepath;
     } else {
-      return path.resolve(__dirname, "..", filepath);
+      return resolve(__dirname, "..", filepath);
     }
   }
 }
@@ -1877,14 +2178,13 @@ async function _fetchAssets(filepath) {
   if (isBrowser) {
     return await fetch(path).then((r) => r.text());
   } else {
-    const fs = require("fs");
     return await fs.promises.readFile(path, "utf-8");
   }
 }
 async function _fetchJSONAssets(filepath) {
   const errors = [];
   const rawTheme = parse(await _fetchAssets(filepath), errors, {
-    allowTrailingComma: true
+    allowTrailingComma: true,
   });
   if (errors.length) {
     throw errors[0];
@@ -1895,7 +2195,9 @@ async function fetchTheme(themePath) {
   let theme = await _fetchJSONAssets(themePath);
   const shikiTheme = toShikiTheme(theme);
   if (shikiTheme.include) {
-    const includedTheme = await fetchTheme(join(...dirpathparts(themePath), shikiTheme.include));
+    const includedTheme = await fetchTheme(
+      join(...dirpathparts(themePath), shikiTheme.include)
+    );
     if (includedTheme.settings) {
       shikiTheme.settings = includedTheme.settings.concat(shikiTheme.settings);
     }
@@ -1913,16 +2215,19 @@ async function fetchGrammar(filepath) {
   return await _fetchJSONAssets(filepath);
 }
 function repairTheme(theme) {
-  if (!theme.settings)
-    theme.settings = [];
-  if (theme.settings[0] && theme.settings[0].settings && !theme.settings[0].scope) {
+  if (!theme.settings) theme.settings = [];
+  if (
+    theme.settings[0] &&
+    theme.settings[0].settings &&
+    !theme.settings[0].scope
+  ) {
     return;
   }
   theme.settings.unshift({
     settings: {
       foreground: theme.fg,
-      background: theme.bg
-    }
+      background: theme.bg,
+    },
   });
 }
 function toShikiTheme(rawTheme) {
@@ -1931,7 +2236,7 @@ function toShikiTheme(rawTheme) {
     name: rawTheme.name,
     type,
     ...rawTheme,
-    ...getThemeDefaultColors(rawTheme)
+    ...getThemeDefaultColors(rawTheme),
   };
   if (rawTheme.include) {
     shikiTheme.include = rawTheme.include;
@@ -1948,9 +2253,11 @@ const VSCODE_FALLBACK_EDITOR_BG = { light: "#fffffe", dark: "#1e1e1e" };
 function getThemeDefaultColors(theme) {
   let fg, bg;
   let settings = theme.settings ? theme.settings : theme.tokenColors;
-  const globalSetting = settings ? settings.find((s) => {
-    return !s.name && !s.scope;
-  }) : void 0;
+  const globalSetting = settings
+    ? settings.find((s) => {
+        return !s.name && !s.scope;
+      })
+    : void 0;
   if (globalSetting?.settings?.foreground) {
     fg = globalSetting.settings.foreground;
   }
@@ -1964,14 +2271,20 @@ function getThemeDefaultColors(theme) {
     bg = theme.colors["editor.background"];
   }
   if (!fg) {
-    fg = theme.type === "light" ? VSCODE_FALLBACK_EDITOR_FG.light : VSCODE_FALLBACK_EDITOR_FG.dark;
+    fg =
+      theme.type === "light"
+        ? VSCODE_FALLBACK_EDITOR_FG.light
+        : VSCODE_FALLBACK_EDITOR_FG.dark;
   }
   if (!bg) {
-    bg = theme.type === "light" ? VSCODE_FALLBACK_EDITOR_BG.light : VSCODE_FALLBACK_EDITOR_BG.dark;
+    bg =
+      theme.type === "light"
+        ? VSCODE_FALLBACK_EDITOR_BG.light
+        : VSCODE_FALLBACK_EDITOR_BG.dark;
   }
   return {
     fg,
-    bg
+    bg,
   };
 }
 
@@ -2041,7 +2354,8 @@ function tokenizeWithTheme(theme, colorMap, fileContents, grammar, options) {
     let tokensLength = result.tokens.length / 2;
     for (let j = 0; j < tokensLength; j++) {
       let startIndex = result.tokens[2 * j];
-      let nextStartIndex = j + 1 < tokensLength ? result.tokens[2 * j + 2] : line.length;
+      let nextStartIndex =
+        j + 1 < tokensLength ? result.tokens[2 * j + 2] : line.length;
       if (startIndex === nextStartIndex) {
         continue;
       }
@@ -2061,7 +2375,7 @@ function tokenizeWithTheme(theme, colorMap, fileContents, grammar, options) {
           offset += tokenWithScopesText.length;
           explanation.push({
             content: tokenWithScopesText,
-            scopes: explainThemeScopes(theme, tokenWithScopes.scopes)
+            scopes: explainThemeScopes(theme, tokenWithScopes.scopes),
           });
           tokensWithScopesIndex++;
         }
@@ -2070,7 +2384,7 @@ function tokenizeWithTheme(theme, colorMap, fileContents, grammar, options) {
         content: line.substring(startIndex, nextStartIndex),
         color: foregroundColor,
         fontStyle,
-        explanation
+        explanation,
       });
     }
     final.push(actual);
@@ -2086,14 +2400,17 @@ function explainThemeScopes(theme, scopes) {
     let scope = scopes[i];
     result[i] = {
       scopeName: scope,
-      themeMatches: explainThemeScope(theme, scope, parentScopes)
+      themeMatches: explainThemeScope(theme, scope, parentScopes),
     };
   }
   return result;
 }
 function matchesOne(selector, scope) {
   let selectorPrefix = selector + ".";
-  if (selector === scope || scope.substring(0, selectorPrefix.length) === selectorPrefix) {
+  if (
+    selector === scope ||
+    scope.substring(0, selectorPrefix.length) === selectorPrefix
+  ) {
     return true;
   }
   return false;
@@ -2105,7 +2422,12 @@ function matches(selector, selectorParentScopes, scope, parentScopes) {
   let selectorParentIndex = selectorParentScopes.length - 1;
   let parentIndex = parentScopes.length - 1;
   while (selectorParentIndex >= 0 && parentIndex >= 0) {
-    if (matchesOne(selectorParentScopes[selectorParentIndex], parentScopes[parentIndex])) {
+    if (
+      matchesOne(
+        selectorParentScopes[selectorParentIndex],
+        parentScopes[parentIndex]
+      )
+    ) {
       selectorParentIndex--;
     }
     parentIndex--;
@@ -2116,7 +2438,8 @@ function matches(selector, selectorParentScopes, scope, parentScopes) {
   return false;
 }
 function explainThemeScope(theme, scope, parentScopes) {
-  let result = [], resultLen = 0;
+  let result = [],
+    resultLen = 0;
   for (let i = 0, len = theme.settings.length; i < len; i++) {
     let setting = theme.settings[i];
     let selectors;
@@ -2131,7 +2454,10 @@ function explainThemeScope(theme, scope, parentScopes) {
       let rawSelector = selectors[j];
       let rawSelectorPieces = rawSelector.split(/ /);
       let selector = rawSelectorPieces[rawSelectorPieces.length - 1];
-      let selectorParentScopes = rawSelectorPieces.slice(0, rawSelectorPieces.length - 1);
+      let selectorParentScopes = rawSelectorPieces.slice(
+        0,
+        rawSelectorPieces.length - 1
+      );
       if (matches(selector, selectorParentScopes, scope, parentScopes)) {
         result[resultLen++] = setting;
         j = lenJ;
@@ -2153,11 +2479,14 @@ const defaultElements = {
   },
   token({ style, children }) {
     return `<span style="${style}">${children}</span>`;
-  }
+  },
 };
 function renderToHtml(lines, options = {}) {
   const bg = options.bg || "#fff";
-  const optionsByLineNumber = groupBy(options.lineOptions ?? [], (option) => option.line);
+  const optionsByLineNumber = groupBy(
+    options.lineOptions ?? [],
+    (option) => option.line
+  );
   const userElements = options.elements || {};
   function h(type = "", props = {}, children) {
     const element = userElements[type] || defaultElements[type];
@@ -2165,14 +2494,17 @@ function renderToHtml(lines, options = {}) {
       children = children.filter(Boolean);
       return element({
         ...props,
-        children: type === "code" ? children.join("\n") : children.join("")
+        children: type === "code" ? children.join("\n") : children.join(""),
       });
     }
     return "";
   }
   return h(
     "pre",
-    { className: "shiki " + (options.themeName || ""), style: `background-color: ${bg}` },
+    {
+      className: "shiki " + (options.themeName || ""),
+      style: `background-color: ${bg}`,
+    },
     [
       options.langId ? `<div class="language-id">${options.langId}</div>` : "",
       h(
@@ -2188,7 +2520,7 @@ function renderToHtml(lines, options = {}) {
               className: lineClasses,
               lines,
               line,
-              index
+              index,
             },
             line.map((token, index2) => {
               const cssDeclarations = [`color: ${token.color || options.fg}`];
@@ -2207,14 +2539,14 @@ function renderToHtml(lines, options = {}) {
                   style: cssDeclarations.join("; "),
                   tokens: line,
                   token,
-                  index: index2
+                  index: index2,
                 },
                 [escapeHtml(token.content)]
               );
             })
           );
         })
-      )
+      ),
     ]
   );
 }
@@ -2223,7 +2555,7 @@ const htmlEscapes = {
   "<": "&lt;",
   ">": "&gt;",
   '"': "&quot;",
-  "'": "&#39;"
+  "'": "&#39;",
 };
 function escapeHtml(html) {
   return html.replace(/[&<>"']/g, (chr) => htmlEscapes[chr]);
@@ -2261,7 +2593,9 @@ class Registry extends Registry$1 {
   async loadTheme(theme) {
     if (typeof theme === "string") {
       if (!this._resolvedThemes[theme]) {
-        this._resolvedThemes[theme] = await fetchTheme(`${this.themesPath}${theme}.json`);
+        this._resolvedThemes[theme] = await fetchTheme(
+          `${this.themesPath}${theme}.json`
+        );
       }
       return this._resolvedThemes[theme];
     } else {
@@ -2282,19 +2616,31 @@ class Registry extends Registry$1 {
     return this._resolvedGrammars[name];
   }
   async loadLanguage(lang) {
-    const embeddedLanguages = lang.embeddedLangs?.reduce(async (acc, l, idx) => {
-      if (!this.getLoadedLanguages().includes(l) && this._resolver.getLangRegistration(l)) {
-        await this._resolver.loadGrammar(this._resolver.getLangRegistration(l).scopeName);
-        acc[this._resolver.getLangRegistration(l).scopeName] = idx + 2;
-        return acc;
-      }
-    }, {});
+    const embeddedLanguages = lang.embeddedLangs?.reduce(
+      async (acc, l, idx) => {
+        if (
+          !this.getLoadedLanguages().includes(l) &&
+          this._resolver.getLangRegistration(l)
+        ) {
+          await this._resolver.loadGrammar(
+            this._resolver.getLangRegistration(l).scopeName
+          );
+          acc[this._resolver.getLangRegistration(l).scopeName] = idx + 2;
+          return acc;
+        }
+      },
+      {}
+    );
     const grammarConfig = {
       embeddedLanguages,
       balancedBracketSelectors: lang.balancedBracketSelectors || ["*"],
-      unbalancedBracketSelectors: lang.unbalancedBracketSelectors || []
+      unbalancedBracketSelectors: lang.unbalancedBracketSelectors || [],
     };
-    const g = await this.loadGrammarWithConfiguration(lang.scopeName, 1, grammarConfig);
+    const g = await this.loadGrammarWithConfiguration(
+      lang.scopeName,
+      1,
+      grammarConfig
+    );
     this._resolvedGrammars[lang.id] = g;
     if (lang.aliases) {
       lang.aliases.forEach((la) => {
@@ -2330,12 +2676,18 @@ class Registry extends Registry$1 {
 }
 
 function resolveLang(lang) {
-  return typeof lang === "string" ? languages.find((l) => l.id === lang || l.aliases?.includes(lang)) : lang;
+  return typeof lang === "string"
+    ? languages.find((l) => l.id === lang || l.aliases?.includes(lang))
+    : lang;
 }
 function resolveOptions(options) {
   let _languages = languages;
   let _themes = options.themes || [];
-  let _wasmPath = options.paths?.wasm ? options.paths.wasm.endsWith("/") ? options.paths.wasm : options.paths.wasm + "/" : WASM_PATH;
+  let _wasmPath = options.paths?.wasm
+    ? options.paths.wasm.endsWith("/")
+      ? options.paths.wasm
+      : options.paths.wasm + "/"
+    : WASM_PATH;
   if (options.langs) {
     _languages = options.langs.map(resolveLang);
   }
@@ -2352,10 +2704,14 @@ async function getHighlighter(options) {
   const _resolver = new Resolver(getOniguruma(_wasmPath), "vscode-oniguruma");
   const _registry = new Registry(_resolver);
   if (options.paths?.themes) {
-    _registry.themesPath = options.paths.themes.endsWith("/") ? options.paths.themes : options.paths.themes + "/";
+    _registry.themesPath = options.paths.themes.endsWith("/")
+      ? options.paths.themes
+      : options.paths.themes + "/";
   }
   if (options.paths?.languages) {
-    _resolver.languagesPath = options.paths.languages.endsWith("/") ? options.paths.languages : options.paths.languages + "/";
+    _resolver.languagesPath = options.paths.languages.endsWith("/")
+      ? options.paths.languages
+      : options.paths.languages + "/";
   }
   const themes = await _registry.loadThemes(_themes);
   const _defaultTheme = themes[0];
@@ -2372,7 +2728,7 @@ async function getHighlighter(options) {
     "#000009": "var(--shiki-token-function)",
     "#000010": "var(--shiki-token-string-expression)",
     "#000011": "var(--shiki-token-punctuation)",
-    "#000012": "var(--shiki-token-link)"
+    "#000012": "var(--shiki-token-link)",
   };
   function setColorReplacements(map) {
     COLOR_REPLACEMENTS = map;
@@ -2406,7 +2762,12 @@ async function getHighlighter(options) {
     }
     return { _grammar };
   }
-  function codeToThemedTokens(code, lang = "text", theme, options2 = { includeExplanation: true }) {
+  function codeToThemedTokens(
+    code,
+    lang = "text",
+    theme,
+    options2 = { includeExplanation: true }
+  ) {
     if (isPlaintext(lang)) {
       const lines = code.split(/\r\n|\r|\n/);
       return [...lines.map((line) => [{ content: line }])];
@@ -2422,18 +2783,18 @@ async function getHighlighter(options) {
     } else {
       options2 = {
         lang: arg1,
-        theme: arg2
+        theme: arg2,
       };
     }
     const tokens = codeToThemedTokens(code, options2.lang, options2.theme, {
-      includeExplanation: false
+      includeExplanation: false,
     });
     const { _theme } = getTheme(options2.theme);
     return renderToHtml(tokens, {
       fg: _theme.fg,
       bg: _theme.bg,
       lineOptions: options2?.lineOptions,
-      themeName: _theme.name
+      themeName: _theme.name,
     });
   }
   async function loadTheme(theme) {
@@ -2470,14 +2831,13 @@ async function getHighlighter(options) {
     getForegroundColor,
     getLoadedThemes,
     getLoadedLanguages,
-    setColorReplacements
+    setColorReplacements,
   };
 }
 function isPlaintext(lang) {
   return !lang || ["plaintext", "txt", "text"].includes(lang);
 }
 
-// @ts-ignore
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
