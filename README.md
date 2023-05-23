@@ -1,6 +1,6 @@
-# vpdemo
+# vpressdemo
 
-[![npm](https://img.shields.io/npm/v/vpdemo)](https://www.npmjs.com/package/vpdemo)
+[![npm](https://img.shields.io/npm/v/vpressdemo)](https://www.npmjs.com/package/vpressdemo)
 
 ## INTRODUCTION
 
@@ -9,19 +9,19 @@
 ## Usage
 
 ```
-npm i -D vpdemo
+npm i -D vpressdemo
 ```
 
 ```js
 // .vitepress/config.ts / config.js
-import vpdemo from "vpdemo";
+import vpressdemo from "vpressdemo";
 // ...
 export default {
   // ...
   markdown: {
     // ...
     config: (md) => {
-      md.use(vpdemo);
+      md.use(vpressdemo);
     },
   },
 };
@@ -30,7 +30,7 @@ export default {
 ```js
 // .vitepress/theme/index.ts / index.js
 import DefaultTheme from "vitepress/theme";
-import demo from "vpdemo/demo.vue";
+import demo from "vpressdemo/demo.vue";
 // ...
 export default {
   ...DefaultTheme,
