@@ -3,8 +3,8 @@ import vpdemo from "../src/vpdemo/vpindex";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: "/vpdemo",
-  title: "VPDemo",
+  base: "/vpressdemo",
+  title: "VPressDemo",
   description: "Support demo import and preview for vitepress",
   markdown: {
     config: (md) => {
