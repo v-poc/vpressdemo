@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
 let codeToHtml: any = null;
 (async () => {
   let res = await getHighlighter({
-    theme: "material-palenight",
+    theme: "material-theme-palenight",
   });
   codeToHtml = res.codeToHtml;
 })();

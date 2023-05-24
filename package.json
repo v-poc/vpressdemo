@@ -1,6 +1,6 @@
 {
   "name": "vpressdemo",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Support demo import and preview for vitepress",
   "type": "module",
   "files": [
@@ -45,7 +45,7 @@
     "start": "vitepress dev"
   },
   "devDependencies": {
-    "shiki": "0.12.1",
+    "shiki": "^0.14.2",
     "vite": "latest",
     "vite-plugin-node-polyfills": "^0.8.2",
     "vite-plugin-static-copy": "^0.15.0",
