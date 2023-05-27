@@ -1,12 +1,12 @@
 {
   "name": "vpressdemo",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Support demo import and preview for vitepress",
   "type": "module",
   "files": [
     "dist",
-    "languages",
-    "themes",
+    "src/languages",
+    "src/themes",
     "CHANGELOG.md",
     "LICENSE",
     "README.md"

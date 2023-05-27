@@ -1,12 +1,11 @@
 import fs from "fs";
 import { dirname, resolve, isAbsolute, join as pathjoin } from "path";
 import { fileURLToPath } from "url";
-import {
-  loadWASM,
-  createOnigScanner,
-  createOnigString,
-} from "vscode-oniguruma";
-import { INITIAL, Registry as Registry$1 } from "vscode-textmate";
+import onigurumaPkg from "vscode-oniguruma";
+import textmatePkg from "vscode-textmate";
+
+const { loadWASM, createOnigScanner, createOnigString } = onigurumaPkg;
+const { INITIAL, Registry: Registry$1 } = textmatePkg;
 
 const themes = [
   "css-variables",
@@ -18,11 +17,11 @@ const themes = [
   "github-light",
   "hc_light",
   "light-plus",
-  "material-darker",
-  "material-default",
-  "material-lighter",
-  "material-ocean",
-  "material-palenight",
+  "material-theme-darker",
+  "material-theme-lighter",
+  "material-theme-ocean",
+  "material-theme-palenight",
+  "material-theme",
   "min-dark",
   "min-light",
   "monokai",
@@ -83,6 +82,12 @@ const languages = [
     samplePath: "applescript.sample",
   },
   {
+    id: "ara",
+    scopeName: "source.ara",
+    path: "ara.tmLanguage.json",
+    samplePath: "ara.sample",
+  },
+  {
     id: "asm",
     scopeName: "source.asm.x86_64",
     path: "asm.tmLanguage.json",
@@ -97,12 +102,13 @@ const languages = [
       "json",
       "javascript",
       "typescript",
-      "tsx",
-      "css",
-      "less",
-      "sass",
-      "scss",
       "stylus",
+      "sass",
+      "css",
+      "scss",
+      "less",
+      "postcss",
+      "tsx",
     ],
   },
   {
@@ -249,6 +255,12 @@ const languages = [
     samplePath: "dart.sample",
   },
   {
+    id: "dax",
+    scopeName: "source.dax",
+    path: "dax.tmLanguage.json",
+    samplePath: "dax.sample",
+  },
+  {
     id: "diff",
     scopeName: "source.diff",
     path: "diff.tmLanguage.json",
@@ -259,6 +271,7 @@ const languages = [
     scopeName: "source.dockerfile",
     path: "docker.tmLanguage.json",
     samplePath: "docker.sample",
+    aliases: ["dockerfile"],
   },
   {
     id: "dream-maker",
@@ -306,6 +319,25 @@ const languages = [
     samplePath: "fsharp.sample",
     aliases: ["f#", "fs"],
     embeddedLangs: ["markdown"],
+  },
+  {
+    id: "gdresource",
+    scopeName: "source.gdresource",
+    path: "gdresource.tmLanguage.json",
+    samplePath: "gdresource.sample",
+    embeddedLangs: ["gdshader", "gdscript"],
+  },
+  {
+    id: "gdscript",
+    scopeName: "source.gdscript",
+    path: "gdscript.tmLanguage.json",
+    samplePath: "gdscript.sample",
+  },
+  {
+    id: "gdshader",
+    scopeName: "source.gdshader",
+    path: "gdshader.tmLanguage.json",
+    samplePath: "gdshader.sample",
   },
   {
     id: "gherkin",
@@ -397,6 +429,13 @@ const languages = [
     embeddedLangs: ["javascript", "css"],
   },
   {
+    id: "http",
+    scopeName: "source.http",
+    path: "http.tmLanguage.json",
+    samplePath: "http.sample",
+    embeddedLangs: ["shellscript", "json", "xml", "graphql"],
+  },
+  {
     id: "imba",
     scopeName: "source.imba",
     path: "imba.tmLanguage.json",
@@ -406,6 +445,7 @@ const languages = [
     id: "ini",
     scopeName: "source.ini",
     path: "ini.tmLanguage.json",
+    aliases: ["properties"],
   },
   {
     id: "java",
@@ -425,6 +465,13 @@ const languages = [
     scopeName: "text.html.jinja",
     path: "jinja-html.tmLanguage.json",
     embeddedLangs: ["html"],
+  },
+  {
+    id: "jison",
+    scopeName: "source.jison",
+    path: "jison.tmLanguage.json",
+    samplePath: "jison.sample",
+    embeddedLangs: ["javascript"],
   },
   {
     id: "json",
@@ -469,6 +516,14 @@ const languages = [
     id: "kotlin",
     scopeName: "source.kotlin",
     path: "kotlin.tmLanguage.json",
+    samplePath: "kotlin.sample",
+  },
+  {
+    id: "kusto",
+    scopeName: "source.kusto",
+    path: "kusto.tmLanguage.json",
+    samplePath: "kusto.sample",
+    aliases: ["kql"],
   },
   {
     id: "latex",
@@ -591,7 +646,7 @@ const languages = [
     id: "marko",
     scopeName: "text.marko",
     path: "marko.tmLanguage.json",
-    embeddedLangs: ["css", "less", "scss", "typescript"],
+    embeddedLangs: ["css", "less", "scss", "javascript"],
   },
   {
     id: "matlab",
@@ -600,9 +655,51 @@ const languages = [
   },
   {
     id: "mdx",
-    scopeName: "text.html.markdown.jsx",
+    scopeName: "source.mdx",
     path: "mdx.tmLanguage.json",
-    embeddedLangs: ["jsx", "markdown"],
+    embeddedLangs: [
+      "tsx",
+      "toml",
+      "yaml",
+      "c",
+      "clojure",
+      "coffee",
+      "cpp",
+      "csharp",
+      "css",
+      "diff",
+      "docker",
+      "elixir",
+      "elm",
+      "erlang",
+      "go",
+      "graphql",
+      "haskell",
+      "html",
+      "ini",
+      "java",
+      "javascript",
+      "json",
+      "julia",
+      "kotlin",
+      "less",
+      "lua",
+      "make",
+      "markdown",
+      "objective-c",
+      "perl",
+      "python",
+      "r",
+      "ruby",
+      "rust",
+      "scala",
+      "scss",
+      "shellscript",
+      "sql",
+      "xml",
+      "swift",
+      "typescript",
+    ],
   },
   {
     id: "mermaid",
@@ -678,6 +775,12 @@ const languages = [
     path: "postcss.tmLanguage.json",
   },
   {
+    id: "powerquery",
+    scopeName: "source.powerquery",
+    path: "powerquery.tmLanguage.json",
+    samplePath: "powerquery.sample",
+  },
+  {
     id: "powershell",
     scopeName: "source.powershell",
     path: "powershell.tmLanguage.json",
@@ -748,6 +851,12 @@ const languages = [
     scopeName: "text.aspnetcorerazor",
     path: "razor.tmLanguage.json",
     embeddedLangs: ["html", "csharp"],
+  },
+  {
+    id: "reg",
+    scopeName: "source.reg",
+    path: "reg.tmLanguage.json",
+    samplePath: "reg.sample",
   },
   {
     id: "rel",
@@ -835,7 +944,7 @@ const languages = [
     id: "shellscript",
     scopeName: "source.shell",
     path: "shellscript.tmLanguage.json",
-    aliases: ["shell", "bash", "sh", "zsh"],
+    aliases: ["bash", "console", "sh", "shell", "zsh"],
   },
   {
     id: "smalltalk",
@@ -1004,6 +1113,7 @@ const languages = [
       "tsx",
       "json",
       "jsonc",
+      "json5",
       "yaml",
       "toml",
       "graphql",
@@ -1021,6 +1131,18 @@ const languages = [
     aliases: ["\u6587\u8A00"],
   },
   {
+    id: "wgsl",
+    scopeName: "source.wgsl",
+    path: "wgsl.tmLanguage.json",
+    samplePath: "wgsl.sample",
+  },
+  {
+    id: "wolfram",
+    scopeName: "source.wolfram",
+    path: "wolfram.tmLanguage.json",
+    samplePath: "wolfram.sample",
+  },
+  {
     id: "xml",
     scopeName: "text.xml",
     path: "xml.tmLanguage.json",
@@ -1036,6 +1158,7 @@ const languages = [
     id: "yaml",
     scopeName: "source.yaml",
     path: "yaml.tmLanguage.json",
+    aliases: ["yml"],
   },
   {
     id: "zenscript",
@@ -2141,15 +2264,16 @@ async function getOniguruma(wasmPath) {
           data: WASM,
         });
       }
+    } else {
+      if (typeof require.resolve === "function") {
+        const wasmPath2 = pathjoin(
+          require.resolve("vscode-oniguruma"),
+          "../onig.wasm"
+        );
+        const wasmBin = fs.readFileSync(wasmPath2).buffer;
+        loader = loadWASM(wasmBin);
+      }
     }
-    /* else {
-      const wasmPath2 = pathjoin(
-        require.resolve("vscode-oniguruma"),
-        "../onig.wasm"
-      );
-      const wasmBin = fs.readFileSync(wasmPath2).buffer;
-      loader = loadWASM(wasmBin);
-    } */
     _onigurumaPromise = loader.then(() => {
       return {
         createOnigScanner(patterns) {
@@ -2184,13 +2308,19 @@ async function _fetchAssets(filepath) {
 }
 async function _fetchJSONAssets(filepath) {
   const errors = [];
-  const rawTheme = parse(await _fetchAssets(filepath), errors, {
-    allowTrailingComma: true,
-  });
-  if (errors.length) {
-    throw errors[0];
+  const assetString = await _fetchAssets(filepath);
+  let rawAsset;
+  try {
+    rawAsset = JSON.parse(assetString);
+  } catch (e) {
+    rawAsset = parse(assetString, errors, {
+      allowTrailingComma: true,
+    });
+    if (errors.length) {
+      throw errors[0];
+    }
   }
-  return rawTheme;
+  return rawAsset;
 }
 async function fetchTheme(themePath) {
   let theme = await _fetchJSONAssets(themePath);
@@ -2468,9 +2598,336 @@ function explainThemeScope(theme, scope, parentScopes) {
   return result;
 }
 
+// src/colors.ts
+var namedColors = [
+  "black",
+  "red",
+  "green",
+  "yellow",
+  "blue",
+  "magenta",
+  "cyan",
+  "white",
+  "brightBlack",
+  "brightRed",
+  "brightGreen",
+  "brightYellow",
+  "brightBlue",
+  "brightMagenta",
+  "brightCyan",
+  "brightWhite",
+];
+
+// src/decorations.ts
+var decorations = {
+  1: "bold",
+  2: "dim",
+  3: "italic",
+  4: "underline",
+  7: "reverse",
+  9: "strikethrough",
+};
+
+// src/parser.ts
+function findSequence(value, position) {
+  const nextEscape = value.indexOf("\x1B", position);
+  if (nextEscape !== -1) {
+    if (value[nextEscape + 1] === "[") {
+      const nextClose = value.indexOf("m", nextEscape);
+      return {
+        sequence: value.substring(nextEscape + 2, nextClose).split(";"),
+        startPosition: nextEscape,
+        position: nextClose + 1,
+      };
+    }
+  }
+  return {
+    position: value.length,
+  };
+}
+function parseColor(sequence) {
+  const colorMode = sequence.shift();
+  if (colorMode === "2") {
+    const rgb = sequence.splice(0, 3).map((x) => Number.parseInt(x));
+    if (rgb.length !== 3 || rgb.some((x) => Number.isNaN(x))) return;
+    return {
+      type: "rgb",
+      rgb,
+    };
+  } else if (colorMode === "5") {
+    const index = sequence.shift();
+    if (index) {
+      return { type: "table", index: Number(index) };
+    }
+  }
+}
+function parseSequence(sequence) {
+  const commands = [];
+  while (sequence.length > 0) {
+    const code = sequence.shift();
+    if (!code) continue;
+    const codeInt = Number.parseInt(code);
+    if (Number.isNaN(codeInt)) continue;
+    if (codeInt === 0) {
+      commands.push({ type: "resetAll" });
+    } else if (codeInt <= 9) {
+      const decoration = decorations[codeInt];
+      if (decoration) {
+        commands.push({
+          type: "setDecoration",
+          value: decorations[codeInt],
+        });
+      }
+    } else if (codeInt <= 29) {
+      const decoration = decorations[codeInt - 20];
+      if (decoration) {
+        commands.push({
+          type: "resetDecoration",
+          value: decoration,
+        });
+      }
+    } else if (codeInt <= 37) {
+      commands.push({
+        type: "setForegroundColor",
+        value: { type: "named", name: namedColors[codeInt - 30] },
+      });
+    } else if (codeInt === 38) {
+      const color = parseColor(sequence);
+      if (color) {
+        commands.push({
+          type: "setForegroundColor",
+          value: color,
+        });
+      }
+    } else if (codeInt === 39) {
+      commands.push({
+        type: "resetForegroundColor",
+      });
+    } else if (codeInt <= 47) {
+      commands.push({
+        type: "setBackgroundColor",
+        value: { type: "named", name: namedColors[codeInt - 40] },
+      });
+    } else if (codeInt === 48) {
+      const color = parseColor(sequence);
+      if (color) {
+        commands.push({
+          type: "setBackgroundColor",
+          value: color,
+        });
+      }
+    } else if (codeInt === 49) {
+      commands.push({
+        type: "resetBackgroundColor",
+      });
+    } else if (codeInt >= 90 && codeInt <= 97) {
+      commands.push({
+        type: "setForegroundColor",
+        value: { type: "named", name: namedColors[codeInt - 90 + 8] },
+      });
+    } else if (codeInt >= 100 && codeInt <= 107) {
+      commands.push({
+        type: "setBackgroundColor",
+        value: { type: "named", name: namedColors[codeInt - 100 + 8] },
+      });
+    }
+  }
+  return commands;
+}
+function createAnsiSequenceParser() {
+  let foreground = null;
+  let background = null;
+  let decorations2 = /* @__PURE__ */ new Set();
+  return {
+    parse(value) {
+      const tokens = [];
+      let position = 0;
+      do {
+        const findResult = findSequence(value, position);
+        const text = findResult.sequence
+          ? value.substring(position, findResult.startPosition)
+          : value.substring(position);
+        if (text.length > 0) {
+          tokens.push({
+            value: text,
+            foreground,
+            background,
+            decorations: new Set(decorations2),
+          });
+        }
+        if (findResult.sequence) {
+          const commands = parseSequence(findResult.sequence);
+          for (const styleToken of commands) {
+            if (styleToken.type === "resetAll") {
+              foreground = null;
+              background = null;
+              decorations2.clear();
+            } else if (styleToken.type === "resetForegroundColor") {
+              foreground = null;
+            } else if (styleToken.type === "resetBackgroundColor") {
+              background = null;
+            } else if (styleToken.type === "resetDecoration") {
+              decorations2.delete(styleToken.value);
+            }
+          }
+          for (const styleToken of commands) {
+            if (styleToken.type === "setForegroundColor") {
+              foreground = styleToken.value;
+            } else if (styleToken.type === "setBackgroundColor") {
+              background = styleToken.value;
+            } else if (styleToken.type === "setDecoration") {
+              decorations2.add(styleToken.value);
+            }
+          }
+        }
+        position = findResult.position;
+      } while (position < value.length);
+      return tokens;
+    },
+  };
+}
+
+// src/palette.ts
+var defaultNamedColorsMap = {
+  black: "#000000",
+  red: "#bb0000",
+  green: "#00bb00",
+  yellow: "#bbbb00",
+  blue: "#0000bb",
+  magenta: "#ff00ff",
+  cyan: "#00bbbb",
+  white: "#eeeeee",
+  brightBlack: "#555555",
+  brightRed: "#ff5555",
+  brightGreen: "#00ff00",
+  brightYellow: "#ffff55",
+  brightBlue: "#5555ff",
+  brightMagenta: "#ff55ff",
+  brightCyan: "#55ffff",
+  brightWhite: "#ffffff",
+};
+function createColorPalette(namedColorsMap = defaultNamedColorsMap) {
+  function namedColor(name) {
+    return namedColorsMap[name];
+  }
+  function rgbColor(rgb) {
+    return `#${rgb
+      .map((x) => Math.max(0, Math.min(x, 255)).toString(16).padStart(2, "0"))
+      .join("")}`;
+  }
+  let colorTable;
+  function getColorTable() {
+    if (colorTable) {
+      return colorTable;
+    }
+    colorTable = [];
+    for (let i = 0; i < namedColors.length; i++) {
+      colorTable.push(namedColor(namedColors[i]));
+    }
+    let levels = [0, 95, 135, 175, 215, 255];
+    for (let r = 0; r < 6; r++) {
+      for (let g = 0; g < 6; g++) {
+        for (let b = 0; b < 6; b++) {
+          colorTable.push(rgbColor([levels[r], levels[g], levels[b]]));
+        }
+      }
+    }
+    let level = 8;
+    for (let i = 0; i < 24; i++, level += 10) {
+      colorTable.push(rgbColor([level, level, level]));
+    }
+    return colorTable;
+  }
+  function tableColor(index) {
+    return getColorTable()[index];
+  }
+  function value(color) {
+    switch (color.type) {
+      case "named":
+        return namedColor(color.name);
+      case "rgb":
+        return rgbColor(color.rgb);
+      case "table":
+        return tableColor(color.index);
+    }
+  }
+  return {
+    value,
+  };
+}
+
+function tokenizeAnsiWithTheme(theme, fileContents) {
+  const lines = fileContents.split(/\r?\n/);
+  const colorPalette = createColorPalette(
+    Object.fromEntries(
+      namedColors.map((name) => [
+        name,
+        theme.colors[
+          `terminal.ansi${name[0].toUpperCase()}${name.substring(1)}`
+        ],
+      ])
+    )
+  );
+  const parser = createAnsiSequenceParser();
+  return lines.map((line) =>
+    parser.parse(line).map((token) => {
+      let color;
+      if (token.decorations.has("reverse")) {
+        color = token.background
+          ? colorPalette.value(token.background)
+          : theme.bg;
+      } else {
+        color = token.foreground
+          ? colorPalette.value(token.foreground)
+          : theme.fg;
+      }
+      if (token.decorations.has("dim")) {
+        color = dimColor(color);
+      }
+      let fontStyle = FontStyle.None;
+      if (token.decorations.has("bold")) {
+        fontStyle |= FontStyle.Bold;
+      }
+      if (token.decorations.has("italic")) {
+        fontStyle |= FontStyle.Italic;
+      }
+      if (token.decorations.has("underline")) {
+        fontStyle |= FontStyle.Underline;
+      }
+      return {
+        content: token.value,
+        color,
+        fontStyle,
+      };
+    })
+  );
+}
+function dimColor(color) {
+  const hexMatch = color.match(/#([0-9a-f]{3})([0-9a-f]{3})?([0-9a-f]{2})?/);
+  if (hexMatch) {
+    if (hexMatch[3]) {
+      const alpha = Math.round(Number.parseInt(hexMatch[3], 16) / 2)
+        .toString(16)
+        .padStart(2, "0");
+      return `#${hexMatch[1]}${hexMatch[2]}${alpha}`;
+    } else if (hexMatch[2]) {
+      return `#${hexMatch[1]}${hexMatch[2]}80`;
+    } else {
+      return `#${Array.from(hexMatch[1])
+        .map((x) => `${x}${x}`)
+        .join("")}80`;
+    }
+  }
+  const cssVarMatch = color.match(/var\((--shiki-color-ansi-[\w-]+)\)/);
+  if (cssVarMatch) {
+    return `var(${cssVarMatch[1]}-dim)`;
+  }
+  return color;
+}
+
 const defaultElements = {
   pre({ className, style, children }) {
-    return `<pre class="${className}" style="${style}">${children}</pre>`;
+    return `<pre class="${className}" style="${style}" tabindex="0">${children}</pre>`;
   },
   code({ children }) {
     return `<code>${children}</code>`;
@@ -2700,6 +3157,29 @@ function resolveOptions(options) {
   }
   return { _languages, _themes, _wasmPath };
 }
+function generateDefaultColorReplacements() {
+  const replacements = {
+    "#000001": "var(--shiki-color-text)",
+    "#000002": "var(--shiki-color-background)",
+    "#000004": "var(--shiki-token-constant)",
+    "#000005": "var(--shiki-token-string)",
+    "#000006": "var(--shiki-token-comment)",
+    "#000007": "var(--shiki-token-keyword)",
+    "#000008": "var(--shiki-token-parameter)",
+    "#000009": "var(--shiki-token-function)",
+    "#000010": "var(--shiki-token-string-expression)",
+    "#000011": "var(--shiki-token-punctuation)",
+    "#000012": "var(--shiki-token-link)",
+  };
+  for (let i = 0; i < namedColors.length; i++) {
+    const code = `#A${i.toString().padStart(5, "0")}`;
+    const colorNameKebab = namedColors[i]
+      .replace(/([a-z])([A-Z])/g, "$1-$2")
+      .toLowerCase();
+    replacements[code] = `var(--shiki-color-ansi-${colorNameKebab})`;
+  }
+  return replacements;
+}
 async function getHighlighter(options) {
   const { _languages, _themes, _wasmPath } = resolveOptions(options);
   const _resolver = new Resolver(getOniguruma(_wasmPath), "vscode-oniguruma");
@@ -2718,25 +3198,16 @@ async function getHighlighter(options) {
   const _defaultTheme = themes[0];
   let _currentTheme;
   await _registry.loadLanguages(_languages);
-  let COLOR_REPLACEMENTS = {
-    "#000001": "var(--shiki-color-text)",
-    "#000002": "var(--shiki-color-background)",
-    "#000004": "var(--shiki-token-constant)",
-    "#000005": "var(--shiki-token-string)",
-    "#000006": "var(--shiki-token-comment)",
-    "#000007": "var(--shiki-token-keyword)",
-    "#000008": "var(--shiki-token-parameter)",
-    "#000009": "var(--shiki-token-function)",
-    "#000010": "var(--shiki-token-string-expression)",
-    "#000011": "var(--shiki-token-punctuation)",
-    "#000012": "var(--shiki-token-link)",
-  };
+  let COLOR_REPLACEMENTS = generateDefaultColorReplacements();
   function setColorReplacements(map) {
     COLOR_REPLACEMENTS = map;
   }
   function fixCssVariablesTheme(theme, colorMap) {
     theme.bg = COLOR_REPLACEMENTS[theme.bg] || theme.bg;
     theme.fg = COLOR_REPLACEMENTS[theme.fg] || theme.fg;
+    Object.entries(theme.colors).forEach(([key, value]) => {
+      theme.colors[key] = COLOR_REPLACEMENTS[value] || value;
+    });
     colorMap.forEach((val, i) => {
       colorMap[i] = COLOR_REPLACEMENTS[val] || val;
     });
@@ -2777,6 +3248,10 @@ async function getHighlighter(options) {
     const { _theme, _colorMap } = getTheme(theme);
     return tokenizeWithTheme(_theme, _colorMap, code, _grammar, options2);
   }
+  function ansiToThemedTokens(ansi, theme) {
+    const { _theme } = getTheme(theme);
+    return tokenizeAnsiWithTheme(_theme, ansi);
+  }
   function codeToHtml(code, arg1 = "text", arg2) {
     let options2;
     if (typeof arg1 === "object") {
@@ -2791,6 +3266,16 @@ async function getHighlighter(options) {
       includeExplanation: false,
     });
     const { _theme } = getTheme(options2.theme);
+    return renderToHtml(tokens, {
+      fg: _theme.fg,
+      bg: _theme.bg,
+      lineOptions: options2?.lineOptions,
+      themeName: _theme.name,
+    });
+  }
+  function ansiToHtml(ansi, options2) {
+    const tokens = ansiToThemedTokens(ansi, options2?.theme);
+    const { _theme } = getTheme(options2?.theme);
     return renderToHtml(tokens, {
       fg: _theme.fg,
       bg: _theme.bg,
@@ -2823,6 +3308,8 @@ async function getHighlighter(options) {
   return {
     codeToThemedTokens,
     codeToHtml,
+    ansiToThemedTokens,
+    ansiToHtml,
     getTheme: (theme) => {
       return getTheme(theme)._theme;
     },
@@ -2839,13 +3326,17 @@ function isPlaintext(lang) {
   return !lang || ["plaintext", "txt", "text"].includes(lang);
 }
 
+function setOnigasmWASM(path) {
+  setWasm(path);
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 let codeToHtml = null;
 (async () => {
   let res = await getHighlighter({
-    theme: "material-palenight",
+    theme: "material-theme-palenight",
   });
   codeToHtml = res.codeToHtml;
 })();
