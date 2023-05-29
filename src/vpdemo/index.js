@@ -1,11 +1,12 @@
 import fs from "fs";
 import { dirname, resolve, isAbsolute, join as pathjoin } from "path";
 import { fileURLToPath } from "url";
-import onigurumaPkg from "vscode-oniguruma";
-import textmatePkg from "vscode-textmate";
-
-const { loadWASM, createOnigScanner, createOnigString } = onigurumaPkg;
-const { INITIAL, Registry: Registry$1 } = textmatePkg;
+import {
+  loadWASM,
+  createOnigScanner,
+  createOnigString,
+} from "vscode-oniguruma";
+import { INITIAL, Registry as Registry$1 } from "vscode-textmate";
 
 const themes = [
   "css-variables",
