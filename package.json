@@ -9,6 +9,7 @@
     "README.md"
   ],
   "main": "dist/vpindex.js",
+  "types": "dist/index.d.ts",
   "keywords": [
     "vitepress",
     "vpress-demo",
