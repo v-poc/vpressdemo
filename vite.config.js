@@ -9,9 +9,9 @@ export default defineConfig({
     nodePolyfills(),
     viteStaticCopy({
       targets: [
-        { src: "./src/vpdemo/demo.vue", dest: "." },
-        { src: "./src/vpdemo/index.d.ts", dest: "." },
-        { src: "./src/vpdemo/index.js", dest: "." },
+        { src: "./src/vpressdemo/demo.vue", dest: "." },
+        { src: "./src/vpressdemo/index.d.ts", dest: "." },
+        { src: "./src/vpressdemo/index.ts", dest: "." },
       ],
     }),
   ],
@@ -19,9 +19,9 @@ export default defineConfig({
     lib: {
       entry: resolve(
         dirname(fileURLToPath(import.meta.url)),
-        "./src/vpdemo/vpindex.ts"
+        "./src/vpressdemo/index.ts"
       ),
-      name: "VPDemo",
+      name: "VPressDemo",
       formats: ["es"],
       fileName: () => "vpindex.js",
     },

@@ -3,7 +3,7 @@ declare module "*.vue" {
   export default component;
 }
 
-declare module "vpdemo" {
-  const vpdemo: (md: any) => void;
-  export default vpdemo;
+declare module "vpressdemo" {
+  const vpressdemo: (md: any) => void;
+  export default vpressdemo;
 }

@@ -1,26 +1,14 @@
 {
   "name": "vpressdemo",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Support demo import and preview for vitepress",
-  "type": "module",
   "files": [
     "dist",
-    "src/languages",
-    "src/themes",
     "CHANGELOG.md",
     "LICENSE",
     "README.md"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
-    },
-    "./demo.vue": "./dist/demo.vue",
-    "./index.d.ts": "./dist/index.d.ts"
-  },
+  "main": "dist/vpindex.js",
   "keywords": [
     "vitepress",
     "vpress-demo",
@@ -48,7 +36,7 @@
     "shiki": "^0.14.2",
     "vite": "latest",
     "vite-plugin-node-polyfills": "^0.8.2",
-    "vite-plugin-static-copy": "^0.15.0",
+    "vite-plugin-static-copy": "^0.16.0",
     "vitepress": "latest",
     "vue": "latest"
   }

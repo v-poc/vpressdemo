@@ -1,5 +1,6 @@
 import DefaultTheme from "vitepress/theme"; // @ts-ignore
-import demo from "../../src/vpdemo/demo.vue";
+import demo from "../../src/vpressdemo/demo.vue";
+// import demo from "../../dist/demo.vue";
 
 export default {
   ...DefaultTheme,

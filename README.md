@@ -10,11 +10,12 @@
 
 ```
 npm i -D vpressdemo
+npm i -D shiki
 ```
 
 ```js
 // .vitepress/config.ts / config.js
-import vpressdemo from "vpressdemo";
+import vpressdemo from "../node_modules/vpressdemo";
 // ...
 export default {
   // ...
@@ -30,7 +31,7 @@ export default {
 ```js
 // .vitepress/theme/index.ts / index.js
 import DefaultTheme from "vitepress/theme";
-import demo from "vpressdemo/demo.vue";
+import demo from "../../node_modules/vpressdemo/demo.vue";
 // ...
 export default {
   ...DefaultTheme,

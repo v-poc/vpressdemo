@@ -1,3 +1,7 @@
+# 0.1.12 (2023-06-04)
+
+Refactor the usage.
+
 # 0.1.9 (2023-05-23)
 
 Renamed to `vpressdemo`.

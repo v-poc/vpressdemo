@@ -1,5 +1,6 @@
 import { defineConfig } from "vitepress"; // @ts-ignore
-import vpdemo from "../src/vpdemo/vpindex";
+import vpressdemo from "../src/vpressdemo";
+// import vpressdemo from "../dist";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -8,7 +9,7 @@ export default defineConfig({
   description: "Support demo import and preview for vitepress",
   markdown: {
     config: (md) => {
-      md.use(vpdemo);
+      md.use(vpressdemo);
     },
   },
   themeConfig: {
