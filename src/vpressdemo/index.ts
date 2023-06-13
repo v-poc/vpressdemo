@@ -1,9 +1,8 @@
-import fs from "fs";
+import fs from "fs-extra";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import { getHighlighter } from "shiki";
 
-// @ts-ignore
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 

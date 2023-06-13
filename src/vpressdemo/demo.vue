@@ -1,6 +1,5 @@
 <script>
 import { computed, defineAsyncComponent, ref } from "vue";
-// @ts-ignore
 const modules = import.meta.glob("../../../**/*.vue");
 const timerMap = new Map();
 

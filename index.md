@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "vpdemo"
+  name: "vpressdemo"
   text:
   tagline: "Support demo import and preview for vitepress"
   actions:
@@ -12,7 +12,7 @@ hero:
       link: /src/docs/basic/helloworld
     - theme: alt
       text: GitHub
-      link: https://github.com/v-poc/vpdemo
+      link: https://github.com/v-poc/vpressdemo
 
 features:
   - title: ⚡️ Vite4-Powered
