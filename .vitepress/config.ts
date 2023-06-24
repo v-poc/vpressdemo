@@ -30,6 +30,8 @@ export default defineConfig({
       },
     ],
 
-    socialLinks: [{ icon: "github", link: "https://github.com/v-poc/vpdemo" }],
+    socialLinks: [
+      { icon: "github", link: "https://github.com/v-poc/vpressdemo" },
+    ],
   },
 });
