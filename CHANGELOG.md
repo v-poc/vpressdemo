@@ -1,3 +1,7 @@
+## 0.1.16 (2023-07-14)
+
+Updated dependencies
+
 # 0.1.13 (2023-06-12)
 
 Updated deps and fix github link.
