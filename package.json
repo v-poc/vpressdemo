@@ -34,7 +34,7 @@
     "start": "vitepress dev"
   },
   "devDependencies": {
-    "@types/node": "^20.4.3",
+    "@types/node": "^20.4.5",
     "shiki": "^0.14.3",
     "vite": "latest",
     "vite-plugin-node-polyfills": "^0.9.0",
