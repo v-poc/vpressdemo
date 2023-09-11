@@ -35,12 +35,12 @@
     "start": "vitepress dev"
   },
   "devDependencies": {
-    "@types/node": "^20.5.7",
-    "shiki": "^0.14.3",
+    "@types/node": "^20.6.0",
+    "shiki": "^0.14.4",
     "vite": "^4.4.9",
-    "vite-plugin-node-polyfills": "^0.11.3",
+    "vite-plugin-node-polyfills": "^0.13.0",
     "vite-plugin-static-copy": "^0.17.0",
-    "vitepress": "1.0.0-rc.10",
+    "vitepress": "1.0.0-rc.12",
     "vue": "^3.3.4"
   }
 }
