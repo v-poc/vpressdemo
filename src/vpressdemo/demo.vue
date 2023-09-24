@@ -162,6 +162,7 @@ export default {
   --vpdemo-c-brand-dimm: #fafafa;
   --vpdemo-c-text-2: rgba(60, 60, 60, 0.7);
   --vpdemo-c-gray-light-2: #c7c7c7;
+  --vpdemo-code-block-bg: #292d3e;
 }
 
 .__vpdemo {
@@ -202,7 +203,7 @@ export default {
 .__vpdemo-show {
   position: relative;
   border-top: solid 1px var(--vpdemo-c-divider-light);
-  background-color: var(--vp-code-block-bg);
+  background-color: var(--vpdemo-code-block-bg);
 }
 
 .__vpdemo-show_desc {
@@ -266,7 +267,7 @@ export default {
 .__vpdemo-show pre {
   margin: 0;
   padding: 1.25rem 1.5rem;
-  background-color: inherit !important;
+  background-color: var(--vpdemo-code-block-bg) !important;
 }
 
 .__vpdemo-show-code pre.shiki {
