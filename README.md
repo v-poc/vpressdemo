@@ -50,19 +50,19 @@ export default {
 ### How to setup your project
 
 ```
-npm i
+pnpm i
 ```
 
 ### Compiles and hot-reloads for development
 
 ```
-npm start
+pnpm start
 ```
 
 ### Compiles and minifies for production
 
 ```
-npm run build
+pnpm run build
 ```
 
 ### Customize configuration
