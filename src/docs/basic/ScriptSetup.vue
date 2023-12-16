@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from "vue";
-
-const msg = ref("hello world!");
+const msg = ref("hello world! ScriptSetup");
 </script>
 
 <template>
@@ -12,6 +11,7 @@ const msg = ref("hello world!");
 <style scoped>
 .input-example {
   padding-left: 5px;
+  width: 100%;
   border: 1px solid #aaa;
 }
 </style>
