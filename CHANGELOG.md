@@ -1,4 +1,8 @@
-## 0.1.20 (2023-09-13)
+# 0.2.0 (2023-12-15)
+
+Refactor to switch to [`shikiji`](https://github.com/antfu/shikiji).
+
+# 0.1.20 (2023-09-13)
 
 Updated dependencies
 

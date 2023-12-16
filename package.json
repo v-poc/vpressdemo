@@ -1,6 +1,6 @@
 {
   "name": "vpressdemo",
-  "version": "0.1.22",
+  "version": "0.2.0",
   "description": "Support demo import and preview for vitepress",
   "files": [
     "dist",
@@ -8,9 +8,19 @@
     "LICENSE",
     "README.md"
   ],
-  "main": "dist/vpindex.js",
   "type": "module",
   "types": "dist/index.d.ts",
+  "main": "dist/vpressdemo.umd.js",
+  "module": "dist/vpressdemo.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vpressdemo.es.js",
+      "require": "./dist/vpressdemo.umd.js"
+    },
+    "./demo.vue": "./dist/demo.vue",
+    "./index": "./dist/index.ts"
+  },
+
   "keywords": [
     "vitepress",
     "vpress-demo",
@@ -34,14 +44,14 @@
     "preview-docs": "vitepress preview",
     "start": "vitepress dev"
   },
-  "packageManager": "pnpm@8.10.5",
+  "packageManager": "pnpm@8.13.0",
   "devDependencies": {
-    "@types/node": "^20.9.0",
-    "shiki": "^0.14.5",
-    "vite": "^5.0.0",
-    "vite-plugin-node-polyfills": "^0.16.0",
-    "vite-plugin-static-copy": "^0.17.0",
-    "vitepress": "1.0.0-rc.26",
-    "vue": "^3.3.8"
+    "@types/node": "^20.10.4",
+    "shikiji": "^0.9.4",
+    "vite": "^5.0.10",
+    "vite-plugin-node-polyfills": "^0.17.0",
+    "vite-plugin-static-copy": "^1.0.0",
+    "vitepress": "1.0.0-rc.31",
+    "vue": "^3.3.11"
   }
 }

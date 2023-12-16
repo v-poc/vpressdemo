@@ -1,7 +1,10 @@
 import { fileURLToPath } from "url";
-import { getHighlighter } from "shiki"; // @ts-ignore
-import { dirname, resolve } from "path"; // @ts-ignore
+import { getHighlighter } from "shikiji";
+import { dirname, resolve } from "path";
 import fs from "fs";
+
+const defaultTheme = "material-theme-palenight";
+const defaultLang = "vue";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -9,7 +12,8 @@ const __dirname = dirname(__filename);
 let codeToHtml: any = null;
 (async () => {
   let res = await getHighlighter({
-    theme: "material-theme-palenight",
+    themes: [defaultTheme],
+    langs: [defaultLang],
   });
   codeToHtml = res.codeToHtml;
 })();
@@ -70,7 +74,7 @@ export default (md: any) => {
       const slot = getDemoLabel(demo);
       const demoSrc = getDemoLabel(demo, "src"); // demo src
       const demoDesc = getDemoLabel(demo, "desc"); // demo desc
-      const demoLang = getDemoLabel(demo, "lang") || "vue"; // demo lang
+      const demoLang = getDemoLabel(demo, "lang") || defaultLang; // demo lang
       const demoPath = resolve(docPath, "../", demoSrc);
       let demoRelativePath = "";
       const existSrc = demoSrc && fs.existsSync(demoPath);
@@ -84,7 +88,10 @@ export default (md: any) => {
         codeStr = "failed to find src file";
       }
 
-      htmlStr = codeToHtml(codeStr, { lang: demoLang });
+      htmlStr = codeToHtml(codeStr, {
+        lang: demoLang,
+        theme: defaultTheme,
+      });
       descStr = md.renderInline(demoDesc) || "";
       let demoStr = demo.replace(
         ">",
