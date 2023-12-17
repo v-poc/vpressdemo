@@ -1,4 +1,4 @@
-# 0.2.1 (2023-12-15)
+# 0.2.2 (2023-12-16)
 
 Refactor to switch to [`shikiji`](https://github.com/antfu/shikiji).
 
