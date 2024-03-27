@@ -1,3 +1,7 @@
+# 0.2.3 (2024-03-27)
+
+Updated to switch back to [`shiki`](https://github.com/shikijs/shiki).
+
 # 0.2.2 (2023-12-16)
 
 Refactor to switch to [`shikiji`](https://github.com/antfu/shikiji).

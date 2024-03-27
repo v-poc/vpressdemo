@@ -1,5 +1,5 @@
 import { fileURLToPath } from "url";
-import { getHighlighter } from "shikiji";
+import { getHighlighterCore } from "shiki/core";
 import { dirname, resolve } from "path";
 import fs from "fs";
 
@@ -11,9 +11,9 @@ const __dirname = dirname(__filename);
 
 let codeToHtml: any = null;
 (async () => {
-  let res = await getHighlighter({
-    themes: [defaultTheme],
-    langs: [defaultLang],
+  let res = await getHighlighterCore({
+    themes: [import("shiki/themes/material-theme-palenight.mjs")],
+    langs: [import("shiki/langs/vue.mjs")],
   });
   codeToHtml = res.codeToHtml;
 })();

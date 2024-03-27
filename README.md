@@ -9,7 +9,7 @@
 ## Usage
 
 ```
-npm i -D vpressdemo shikiji
+npm i -D vpressdemo shiki
 ```
 
 ```js

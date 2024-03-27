@@ -1,4 +1,4 @@
-import { defineConfig } from "vitepress"; // @ts-ignore
+import { defineConfig } from "vitepress";
 import vpressdemo from "../src/vpressdemo";
 // import vpressdemo from "../dist";
 

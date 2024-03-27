@@ -15,7 +15,7 @@ hero:
       link: https://github.com/v-poc/vpressdemo
 
 features:
-  - title: ⚡️ Vite4-Powered
+  - title: ⚡️ Vite5-Powered
     details: Feel the speed of Vite. Instant server start and lightning fast HMR that stays fast regardless of the app size.
   - title: ✨ Customizable
     details: We can flexibly create our own themes based on CSS variables.
