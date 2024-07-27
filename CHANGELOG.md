@@ -1,3 +1,7 @@
+# 0.2.4 (2024-07-26)
+
+Updated deps.
+
 # 0.2.3 (2024-03-27)
 
 Updated to switch back to [`shiki`](https://github.com/shikijs/shiki).
